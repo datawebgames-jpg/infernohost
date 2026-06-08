@@ -66,6 +66,16 @@ const GAMES = {
     minRam: 6,
     port: 7777,
   },
+  'ark-se': {
+    name: 'ARK: Survival Evolved',
+    icon: '🦕',
+    color: '#92400e',
+    useSteam: true,
+    appId: '376030',
+    exe: ['ShooterGame','Binaries','Win64','ShooterGameServer.exe'],
+    minRam: 8,
+    port: 7778,
+  },
 };
 
 // ─── ACTIVE PROCESSES ────────────────────────────────────────────────────────
@@ -328,6 +338,47 @@ ipcMain.handle('start-server', async (event, { serverId, gameId, config }) => {
           ] : []),
           ...(mods.length ? [`-mods=${mods.join(',')}`] : []),
         ];
+      } else if (gameId === 'ark-se') {
+        const map    = config['MapName'] || 'TheIsland';
+        const sname  = config['SessionName'] || name;
+        const maxp   = config['MaxPlayers'] || maxP;
+        const apass  = config['ServerAdminPassword'] || 'admin123';
+        const spass  = config['ServerPassword'] || '';
+        const port   = config['Port'] || '7778';
+        const qport  = config['QueryPort'] || String(parseInt(port) + 1);
+        const clusterEnabled = config['__cluster_enabled__'] === 'true';
+        const clusterId      = (config['__cluster_id__'] || '').trim();
+        const instanceName   = (config['__instance_name__'] || '').trim();
+        const mods = (config['__mods__'] || '').split('\n').map(s=>s.trim()).filter(Boolean);
+
+        if (clusterEnabled && clusterId) {
+          const cdir = path.join(CLUSTERS_DIR, clusterId);
+          if (!fs.existsSync(cdir)) fs.mkdirSync(cdir, { recursive: true });
+        }
+
+        const query = [
+          `${map}?listen`,
+          `SessionName=${sname}`,
+          `MaxPlayers=${maxp}`,
+          `ServerAdminPassword=${apass}`,
+          ...(spass ? [`ServerPassword=${spass}`] : []),
+          ...(config['ServerPVE'] === 'true' ? ['ServerPVE=true'] : []),
+        ].join('?');
+
+        args = [
+          query,
+          `-port=${port}`,
+          `-queryport=${qport}`,
+          '-servergamelog',
+          '-ServerRCONOutputTribeLogs',
+          ...(instanceName ? [`-AltSaveDirectoryName=${instanceName}`] : []),
+          ...(clusterEnabled && clusterId ? [
+            `-clusterid=${clusterId}`,
+            `-ClusterDirOverride=${path.join(CLUSTERS_DIR, clusterId)}`,
+            '-NoTransferFromFiltering',
+          ] : []),
+          ...(mods.length ? [`-mods=${mods.join(',')}`] : []),
+        ];
       } else if (gameId === 'valheim') {
         args = ['-name', config['name']||name, '-port', config['port']||'2456',
                 '-world', config['world']||'Dedicated', '-password', config['password']||pass,
@@ -529,6 +580,125 @@ ipcMain.handle('write-game-config', (_, { gameId, config }) => {
       fs.writeFileSync(path.join(cfgDir, 'GameUserSettings.ini'), gus + '\n');
 
       // Game.ini — per-level stats and game mode settings
+      const plsIdx = { pls_health:0, pls_stamina:1, pls_oxygen:3, pls_food:4,
+                       pls_water:5, pls_weight:7, pls_damage:8, pls_speed:9, pls_crafting:11 };
+      const dlsIdx = { dls_health:0, dls_stamina:1, dls_weight:7, dls_damage:8 };
+
+      const plsLines = Object.entries(plsIdx)
+        .filter(([k]) => v(k,'1') !== '1')
+        .map(([k,i]) => `PerLevelStatsMultiplier_Player[${i}]=${v(k,'1')}`);
+
+      const dlsLines = Object.entries(dlsIdx)
+        .filter(([k]) => v(k,'1') !== '1')
+        .map(([k,i]) => `PerLevelStatsMultiplier_DinoTamed[${i}]=${v(k,'1')}`);
+
+      const gameIni = [
+        '[/script/shootergame.shootergamemode]',
+        `MaxNumberOfPlayersInTribe=${v('MaxNumberOfPlayersInTribe','10')}`,
+        `MaxTribeAlliances=${v('MaxTribeAlliances','10')}`,
+        `TribeNameChangeCooldown=${v('TribeNameChangeCooldown','15')}`,
+        `bDisableFriendlyFire=False`,
+        `bPvEDisableFriendlyFire=False`,
+        ...plsLines,
+        ...dlsLines,
+      ].join('\n');
+      fs.writeFileSync(path.join(cfgDir, 'Game.ini'), gameIni + '\n');
+    }
+
+    // ── ARK: SURVIVAL EVOLVED ─────────────────────────────────────────────────
+    if (gameId === 'ark-se') {
+      const cfgDir = path.join(dir, 'ShooterGame','Saved','Config','WindowsServer');
+      if (!fs.existsSync(cfgDir)) fs.mkdirSync(cfgDir, { recursive: true });
+
+      const gus = [
+        '[ServerSettings]',
+        `ServerAdminPassword=${v('ServerAdminPassword','admin123')}`,
+        `ServerPassword=${v('ServerPassword','')}`,
+        `MaxPlayers=${v('MaxPlayers','70')}`,
+        `ServerPVE=${v('ServerPVE','false')}`,
+        `RCONEnabled=${v('RCONEnabled','false')}`,
+        `RCONPort=${v('RCONPort','32330')}`,
+        `AdminLogging=${v('AdminLogging','true')}`,
+        '',
+        '# --- TASAS ---',
+        `XPMultiplier=${v('XPMultiplier','1')}`,
+        `TamingSpeedMultiplier=${v('TamingSpeedMultiplier','1')}`,
+        `HarvestAmountMultiplier=${v('HarvestAmountMultiplier','1')}`,
+        `HarvestHealthMultiplier=${v('HarvestHealthMultiplier','1')}`,
+        `ResourcesRespawnPeriodMultiplier=${v('ResourcesRespawnPeriodMultiplier','1')}`,
+        `ResourceNoReplenishRadiusPlayers=${v('ResourceNoReplenishRadiusPlayers','1')}`,
+        `ResourceNoReplenishRadiusStructures=${v('ResourceNoReplenishRadiusStructures','1')}`,
+        `PlayerCharacterFoodDrainMultiplier=${v('PlayerCharacterFoodDrainMultiplier','1')}`,
+        `PlayerCharacterWaterDrainMultiplier=${v('PlayerCharacterWaterDrainMultiplier','1')}`,
+        `PlayerCharacterStaminaDrainMultiplier=${v('PlayerCharacterStaminaDrainMultiplier','1')}`,
+        `PlayerCharacterHealthRecoveryMultiplier=${v('PlayerCharacterHealthRecoveryMultiplier','1')}`,
+        `DinoCharacterFoodDrainMultiplier=${v('DinoCharacterFoodDrainMultiplier','1')}`,
+        `DinoCharacterStaminaDrainMultiplier=${v('DinoCharacterStaminaDrainMultiplier','1')}`,
+        `DinoCharacterHealthRecoveryMultiplier=${v('DinoCharacterHealthRecoveryMultiplier','1')}`,
+        '',
+        '# --- BREEDING ---',
+        `MatingIntervalMultiplier=${v('MatingIntervalMultiplier','1')}`,
+        `MatingSpeedMultiplier=${v('MatingSpeedMultiplier','1')}`,
+        `EggHatchSpeedMultiplier=${v('EggHatchSpeedMultiplier','1')}`,
+        `BabyMatureSpeedMultiplier=${v('BabyMatureSpeedMultiplier','1')}`,
+        `BabyFoodConsumptionSpeedMultiplier=${v('BabyFoodConsumptionSpeedMultiplier','1')}`,
+        `BabyCuddleIntervalMultiplier=${v('BabyCuddleIntervalMultiplier','1')}`,
+        `BabyCuddleGracePeriodMultiplier=${v('BabyCuddleGracePeriodMultiplier','1')}`,
+        `BabyCuddleLoseImprintQualitySpeedMultiplier=${v('BabyCuddleLoseImprintQualitySpeedMultiplier','1')}`,
+        `BabyImprintingStatScaleMultiplier=${v('BabyImprintingStatScaleMultiplier','1')}`,
+        '',
+        '# --- COMBATE ---',
+        `PlayerDamageMultiplier=${v('PlayerDamageMultiplier','1')}`,
+        `PlayerResistanceMultiplier=${v('PlayerResistanceMultiplier','1')}`,
+        `DinoDamageMultiplier=${v('DinoDamageMultiplier','1')}`,
+        `DinoResistanceMultiplier=${v('DinoResistanceMultiplier','1')}`,
+        `TamedDinoResistanceMultiplier=${v('TamedDinoResistanceMultiplier','1')}`,
+        `TamedDinoDamageMultiplier=${v('TamedDinoDamageMultiplier','1')}`,
+        `StructureDamageMultiplier=${v('StructureDamageMultiplier','1')}`,
+        `StructureResistanceMultiplier=${v('StructureResistanceMultiplier','1')}`,
+        `DinoCountMultiplier=${v('DinoCountMultiplier','1')}`,
+        `MaxPersonalTamedDinos=${v('MaxPersonalTamedDinos','40')}`,
+        `MaxTamedDinos=${v('MaxTamedDinos','5000')}`,
+        '',
+        '# --- ENTORNO ---',
+        `DayTimeSpeedScale=${v('DayTimeSpeedScale','1')}`,
+        `NightTimeSpeedScale=${v('NightTimeSpeedScale','1')}`,
+        `OverrideOfficialDifficulty=${v('OverrideOfficialDifficulty','5.0')}`,
+        `DifficultyOffset=${v('DifficultyOffset','1.0')}`,
+        `ServerHardcore=${v('ServerHardcore','false')}`,
+        `AllowFlyerCarryPvE=${v('AllowFlyerCarryPvE','false')}`,
+        `PreventDinoTaming=${v('PreventDinoTaming','false')}`,
+        `AllowRaidDinoFeeding=${v('AllowRaidDinoFeeding','false')}`,
+        `EnableCryoSicknessPVE=${v('EnableCryoSicknessPVE','false')}`,
+        '',
+        '# --- CLUSTER / TRANSFERENCIAS ---',
+        `noTributeDownloads=${v('noTributeDownloads','false')}`,
+        `PreventDownloadSurvivors=${v('PreventDownloadSurvivors','false')}`,
+        `PreventDownloadDinos=${v('PreventDownloadDinos','false')}`,
+        `PreventDownloadItems=${v('PreventDownloadItems','false')}`,
+        `PreventUploadSurvivors=${v('PreventUploadSurvivors','false')}`,
+        `PreventUploadDinos=${v('PreventUploadDinos','false')}`,
+        `PreventUploadItems=${v('PreventUploadItems','false')}`,
+        `CrossARKAllowForeignDinoDownloads=${v('CrossARKAllowForeignDinoDownloads','false')}`,
+        '',
+        '# --- TRIBUS ---',
+        `AllowTribeWarPvE=${v('AllowTribeWarPvE','false')}`,
+        `AllowTribeWarCancelPvE=${v('AllowTribeWarCancelPvE','false')}`,
+        `PreventTribeAlliances=${v('PreventTribeAlliances','false')}`,
+        `TribeLogDestroyedEnemyStructures=${v('TribeLogDestroyedEnemyStructures','true')}`,
+        '',
+        '[SessionSettings]',
+        `SessionName=${v('SessionName','Mi ARK SE Server')}`,
+        `MultiHome=`,
+        `Port=${v('Port','7778')}`,
+        `QueryPort=${v('QueryPort','27017')}`,
+        '',
+        '[/Script/Engine.GameSession]',
+        `MaxPlayers=${v('MaxPlayers','70')}`,
+      ].join('\n');
+      fs.writeFileSync(path.join(cfgDir, 'GameUserSettings.ini'), gus + '\n');
+
+      // Game.ini
       const plsIdx = { pls_health:0, pls_stamina:1, pls_oxygen:3, pls_food:4,
                        pls_water:5, pls_weight:7, pls_damage:8, pls_speed:9, pls_crafting:11 };
       const dlsIdx = { dls_health:0, dls_stamina:1, dls_weight:7, dls_damage:8 };

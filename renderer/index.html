@@ -982,6 +982,109 @@ const GAME_CONFIGS = {
   ]},
 
   // ══════════════════════════════════════════════════════════════════════════
+  // ARK: SURVIVAL EVOLVED (clásico)
+  // ══════════════════════════════════════════════════════════════════════════
+  'ark-se': { sections: [
+    { id:'general', title:'General', icon:'fa-server', fields:[
+      { key:'SessionName',         label:'Nombre del servidor', type:'text',     default:'Mi ARK SE Server', desc:'Nombre visible en el listado de servidores' },
+      { key:'Port',                label:'Puerto del juego',    type:'number',   default:'7778', desc:'Puerto TCP/UDP principal (diferente al de ARK SA)' },
+      { key:'QueryPort',           label:'Puerto Steam Query',  type:'number',   default:'27017', desc:'Para la búsqueda en Steam' },
+      { key:'MaxPlayers',          label:'Máx jugadores',       type:'number',   default:'70' },
+      { key:'ServerAdminPassword', label:'Password admin',      type:'password', default:'admin123', desc:'Para acceder como admin in-game con "enablecheats"' },
+      { key:'ServerPassword',      label:'Password de entrada', type:'password', default:'', desc:'Vacío = servidor público' },
+      { key:'MapName',             label:'Mapa',                type:'select',   options:['TheIsland','ScorchedEarth_P','TheCenter','Aberration_P','Extinction','Genesis','Genesis2','CrystalIsles','Ragnarok','Valguero','LostIsland','Fjordur'], default:'TheIsland' },
+      { key:'ServerPVE',           label:'Modo PvE',            type:'select',   options:['false','true'], default:'false', desc:'true = sin daño entre jugadores' },
+      { key:'RCONEnabled',         label:'Activar RCON',        type:'select',   options:['false','true'], default:'false' },
+      { key:'RCONPort',            label:'Puerto RCON',         type:'number',   default:'32330' },
+      { key:'AdminLogging',        label:'Log de comandos admin', type:'select', options:['true','false'], default:'true' },
+    ]},
+    { id:'rates', title:'Tasas', icon:'fa-gauge-high', fields:[
+      { key:'XPMultiplier',                         label:'XP',                    type:'range', min:0.5, max:20,  step:0.5, default:'1' },
+      { key:'TamingSpeedMultiplier',                label:'Velocidad de taming',   type:'range', min:0.5, max:30,  step:0.5, default:'1', desc:'Mayor = se doman más rápido' },
+      { key:'HarvestAmountMultiplier',              label:'Cantidad de cosecha',   type:'range', min:0.5, max:20,  step:0.5, default:'1' },
+      { key:'HarvestHealthMultiplier',              label:'Salud de recursos',     type:'range', min:0.1, max:10,  step:0.1, default:'1' },
+      { key:'ResourcesRespawnPeriodMultiplier',     label:'Respawn de recursos',   type:'range', min:0.1, max:5,   step:0.1, default:'1', desc:'MENOR = reaparecen MÁS rápido' },
+      { key:'PlayerCharacterFoodDrainMultiplier',   label:'Consumo de comida',     type:'range', min:0.1, max:5,   step:0.1, default:'1' },
+      { key:'PlayerCharacterWaterDrainMultiplier',  label:'Consumo de agua',       type:'range', min:0.1, max:5,   step:0.1, default:'1' },
+      { key:'PlayerCharacterStaminaDrainMultiplier',label:'Consumo de stamina',    type:'range', min:0.1, max:5,   step:0.1, default:'1' },
+      { key:'PlayerCharacterHealthRecoveryMultiplier',label:'Recuperación de vida', type:'range', min:0.1, max:5,  step:0.1, default:'1' },
+      { key:'DinoCharacterFoodDrainMultiplier',     label:'Comida de dinos',       type:'range', min:0.1, max:5,   step:0.1, default:'1' },
+      { key:'DinoCharacterStaminaDrainMultiplier',  label:'Stamina de dinos',      type:'range', min:0.1, max:5,   step:0.1, default:'1' },
+      { key:'DinoCharacterHealthRecoveryMultiplier',label:'Recuperación vida dinos', type:'range', min:0.1, max:5, step:0.1, default:'1' },
+    ]},
+    { id:'breeding', title:'Breeding', icon:'fa-egg', fields:[
+      { key:'MatingIntervalMultiplier',                    label:'Intervalo entre crías',        type:'range', min:0.01, max:2,   step:0.01, default:'1', desc:'MENOR = pueden criar con MÁS frecuencia' },
+      { key:'MatingSpeedMultiplier',                       label:'Velocidad de apareamiento',    type:'range', min:0.5,  max:10,  step:0.5,  default:'1' },
+      { key:'EggHatchSpeedMultiplier',                     label:'Velocidad de incubación',      type:'range', min:0.5,  max:100, step:0.5,  default:'1' },
+      { key:'BabyMatureSpeedMultiplier',                   label:'Velocidad de maduración',      type:'range', min:0.5,  max:100, step:0.5,  default:'1' },
+      { key:'BabyFoodConsumptionSpeedMultiplier',          label:'Consumo de comida de crías',   type:'range', min:0.1,  max:5,   step:0.1,  default:'1', desc:'MENOR = más fácil de criar' },
+      { key:'BabyCuddleIntervalMultiplier',                label:'Intervalo de mimos',           type:'range', min:0.01, max:5,   step:0.01, default:'1' },
+      { key:'BabyCuddleGracePeriodMultiplier',             label:'Gracia tras mimo',             type:'range', min:0.1,  max:5,   step:0.1,  default:'1' },
+      { key:'BabyCuddleLoseImprintQualitySpeedMultiplier', label:'Pérdida de imprinting',        type:'range', min:0.1,  max:5,   step:0.1,  default:'1' },
+      { key:'BabyImprintingStatScaleMultiplier',           label:'Bonus de imprinting (stats)',  type:'range', min:0.1,  max:5,   step:0.1,  default:'1' },
+    ]},
+    { id:'combat', title:'Combate', icon:'fa-shield-halved', fields:[
+      { key:'PlayerDamageMultiplier',         label:'Daño del jugador',          type:'range', min:0.5, max:10, step:0.5, default:'1' },
+      { key:'PlayerResistanceMultiplier',     label:'Resistencia del jugador',   type:'range', min:0.5, max:5,  step:0.5, default:'1' },
+      { key:'DinoDamageMultiplier',           label:'Daño de dinos (salvajes)',  type:'range', min:0.5, max:10, step:0.5, default:'1' },
+      { key:'DinoResistanceMultiplier',       label:'Resistencia dinos salvajes',type:'range', min:0.5, max:5,  step:0.5, default:'1' },
+      { key:'TamedDinoDamageMultiplier',      label:'Daño de dinos domados',     type:'range', min:0.5, max:10, step:0.5, default:'1' },
+      { key:'TamedDinoResistanceMultiplier',  label:'Resistencia dinos domados', type:'range', min:0.5, max:5,  step:0.5, default:'1' },
+      { key:'StructureDamageMultiplier',      label:'Daño a estructuras',        type:'range', min:0.5, max:10, step:0.5, default:'1' },
+      { key:'StructureResistanceMultiplier',  label:'Resistencia de estructuras',type:'range', min:0.5, max:10, step:0.5, default:'1' },
+      { key:'DinoCountMultiplier',            label:'Cantidad de dinos salvajes', type:'range', min:0.5, max:5, step:0.5, default:'1' },
+      { key:'MaxPersonalTamedDinos',          label:'Máx dinos por jugador',     type:'number', default:'40' },
+      { key:'MaxTamedDinos',                  label:'Máx dinos totales',         type:'number', default:'5000' },
+    ]},
+    { id:'stats', title:'Stats por Nivel', icon:'fa-chart-bar', fields:[
+      { key:'pls_health',   label:'❤ Vida por nivel (jugador)',     type:'range', min:0.5, max:10, step:0.5, default:'1' },
+      { key:'pls_stamina',  label:'⚡ Stamina por nivel',           type:'range', min:0.5, max:10, step:0.5, default:'1' },
+      { key:'pls_oxygen',   label:'🫧 Oxígeno por nivel',           type:'range', min:0.5, max:10, step:0.5, default:'1' },
+      { key:'pls_food',     label:'🍖 Comida por nivel',            type:'range', min:0.5, max:10, step:0.5, default:'1' },
+      { key:'pls_water',    label:'💧 Agua por nivel',              type:'range', min:0.5, max:10, step:0.5, default:'1' },
+      { key:'pls_weight',   label:'⚖ Peso por nivel',              type:'range', min:0.5, max:20, step:0.5, default:'1' },
+      { key:'pls_damage',   label:'⚔ Daño por nivel',              type:'range', min:0.5, max:10, step:0.5, default:'1' },
+      { key:'pls_speed',    label:'🏃 Velocidad por nivel',         type:'range', min:0.5, max:5,  step:0.5, default:'1' },
+      { key:'pls_crafting', label:'🔨 Artesanía por nivel',         type:'range', min:0.5, max:10, step:0.5, default:'1' },
+      { key:'dls_health',   label:'❤ Vida por nivel (dino domado)',type:'range', min:0.5, max:10, step:0.5, default:'1' },
+      { key:'dls_stamina',  label:'⚡ Stamina por nivel (dino)',    type:'range', min:0.5, max:10, step:0.5, default:'1' },
+      { key:'dls_weight',   label:'⚖ Peso por nivel (dino)',       type:'range', min:0.5, max:20, step:0.5, default:'1' },
+      { key:'dls_damage',   label:'⚔ Daño por nivel (dino domado)',type:'range', min:0.5, max:10, step:0.5, default:'1' },
+    ]},
+    { id:'environment', title:'Entorno', icon:'fa-sun', fields:[
+      { key:'DayTimeSpeedScale',         label:'Velocidad del día',         type:'range', min:0.1, max:10, step:0.1, default:'1' },
+      { key:'NightTimeSpeedScale',       label:'Velocidad de la noche',     type:'range', min:0.1, max:10, step:0.1, default:'1' },
+      { key:'OverrideOfficialDifficulty',label:'Dificultad oficial (nivel máx dino)', type:'number', default:'5.0', desc:'5=lvl150, 6=lvl180, 8=lvl240' },
+      { key:'DifficultyOffset',          label:'Offset de dificultad',      type:'range', min:0, max:1, step:0.05, default:'1.0' },
+      { key:'MaxNumberOfPlayersInTribe', label:'Máx jugadores por tribu',   type:'number', default:'10' },
+      { key:'MaxTribeAlliances',         label:'Máx alianzas de tribu',     type:'number', default:'10' },
+      { key:'ServerHardcore',            label:'Modo Hardcore',             type:'select', options:['false','true'], default:'false' },
+      { key:'AllowFlyerCarryPvE',        label:'Pterosaurios cargan dinos (PvE)', type:'select', options:['false','true'], default:'false' },
+      { key:'PreventDinoTaming',         label:'Desactivar taming',         type:'select', options:['false','true'], default:'false' },
+      { key:'AllowRaidDinoFeeding',      label:'Alimentar dinos de raid',   type:'select', options:['false','true'], default:'false' },
+      { key:'EnableCryoSicknessPVE',     label:'Enfermedad de criyo (PvE)', type:'select', options:['false','true'], default:'false' },
+      { key:'AllowTribeWarPvE',          label:'Guerras tribales (PvE)',     type:'select', options:['false','true'], default:'false' },
+      { key:'PreventTribeAlliances',     label:'Desactivar alianzas',       type:'select', options:['false','true'], default:'false' },
+    ]},
+    { id:'cluster', title:'Cluster', icon:'fa-network-wired', fields:[
+      { key:'__cluster_enabled__', label:'Activar Cluster', type:'select', options:['false','true'], default:'false', desc:'Activa la transferencia entre servidores del cluster' },
+      { key:'__cluster_id__',      label:'ID del Cluster',  type:'text',   default:'MiCluster', desc:'MISMO ID en todos los servidores del cluster' },
+      { key:'__instance_name__',   label:'Nombre de instancia', type:'text', default:'', desc:'Identificador único de este servidor. Ej: TheIsland, Ragnarok' },
+      { key:'noTributeDownloads',           label:'Bloquear todas las descargas', type:'select', options:['false','true'], default:'false' },
+      { key:'PreventDownloadSurvivors',     label:'Bloquear descarga de personajes', type:'select', options:['false','true'], default:'false' },
+      { key:'PreventDownloadDinos',         label:'Bloquear descarga de dinos',      type:'select', options:['false','true'], default:'false' },
+      { key:'PreventDownloadItems',         label:'Bloquear descarga de ítems',      type:'select', options:['false','true'], default:'false' },
+      { key:'PreventUploadSurvivors',       label:'Bloquear subida de personajes',   type:'select', options:['false','true'], default:'false' },
+      { key:'PreventUploadDinos',           label:'Bloquear subida de dinos',        type:'select', options:['false','true'], default:'false' },
+      { key:'PreventUploadItems',           label:'Bloquear subida de ítems',        type:'select', options:['false','true'], default:'false' },
+      { key:'CrossARKAllowForeignDinoDownloads', label:'Permitir dinos de ARK SA',   type:'select', options:['false','true'], default:'false' },
+    ]},
+    { id:'mods', title:'Mods', icon:'fa-puzzle-piece', type:'mods',
+      desc:'IDs de mods de Steam Workshop, uno por línea. Solo el número. Los mods se descargan automáticamente al iniciar. Buscá en:',
+      workshopUrl: 'https://steamcommunity.com/app/346110/workshop/' },
+  ]},
+
+  // ══════════════════════════════════════════════════════════════════════════
   // VALHEIM
   // ══════════════════════════════════════════════════════════════════════════
   valheim: { sections: [
@@ -1197,7 +1300,7 @@ function renderSidebar() {
   const clusters = {};
   const standalone = [];
   servers.forEach(s => {
-    const cid = s.gameId === 'ark' && s.config?.['__cluster_enabled__'] === 'true'
+    const cid = (s.gameId === 'ark' || s.gameId === 'ark-se') && s.config?.['__cluster_enabled__'] === 'true'
       ? (s.config?.['__cluster_id__'] || '').trim() : '';
     if (cid) {
       if (!clusters[cid]) clusters[cid] = [];
@@ -1271,7 +1374,7 @@ async function startInstall(gameId) {
   document.getElementById('installTitle').textContent = `Instalando ${g.name}`;
   document.getElementById('installSub').textContent   = gameId === 'minecraft'
     ? 'Descargando ~50 MB. Listo en segundos.'
-    : `Descargando ${gameId === 'ark' ? '~30 GB' : gameId === 'conan' ? '~35 GB' : '~3 GB'}. Puede tardar varios minutos.`;
+    : `Descargando ${gameId === 'ark' ? '~30 GB' : gameId === 'ark-se' ? '~25 GB' : gameId === 'conan' ? '~35 GB' : '~3 GB'}. Puede tardar varios minutos.`;
   document.getElementById('progressBar').style.width = '0%';
   document.getElementById('progressBar').style.background = g.color;
   document.getElementById('progressText').textContent = 'Iniciando...';
@@ -1331,7 +1434,7 @@ function createServerObj(gameId, name, ram, pass) {
     name,
     config: {
       name, ram, password: pass,
-      maxPlayers: gameId === 'ark' || gameId === 'conan' ? 40 : 20,
+      maxPlayers: gameId === 'ark' || gameId === 'ark-se' || gameId === 'conan' ? 40 : 20,
       adminPassword: 'admin123',
     },
     port: g?.port || 25565,
