@@ -1,0 +1,1836 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; script-src 'self' 'unsafe-inline';">
+  <title>InfernoHost Manager</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#060a14; --bg2:#0a0f1e; --card:#0d1525;
+      --border:#1a2540; --border2:#243050;
+      --text:#e2e8f0; --muted:#64748b; --dim:#334155;
+      --cyan:#00d4ff; --orange:#ff6b35; --green:#10b981;
+      --red:#ef4444; --yellow:#f59e0b; --purple:#7c3aed;
+    }
+    html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;user-select:none;}
+    ::-webkit-scrollbar{width:4px;height:4px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+    .mono{font-family:'JetBrains Mono',monospace}
+    .gaming{font-family:'Rajdhani',sans-serif;font-weight:700}
+
+    /* ── TITLEBAR ── */
+    #titlebar{
+      height:40px;display:flex;align-items:center;justify-content:space-between;
+      background:var(--bg2);border-bottom:1px solid var(--border);
+      -webkit-app-region:drag;flex-shrink:0;padding:0 12px;
+    }
+    #titlebar .logo{display:flex;align-items:center;gap:8px;-webkit-app-region:no-drag}
+    #titlebar .logo .icon{width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,#ff6b35,#dc2626);display:flex;align-items:center;justify-content:center;font-size:11px}
+    #titlebar .logo span{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:white;letter-spacing:0.5px}
+    #titlebar .logo span em{color:#ff6b35;font-style:normal}
+    #titlebar .wintitle{font-size:12px;color:var(--dim);position:absolute;left:50%;transform:translateX(-50%)}
+    #titlebar .winbtns{display:flex;gap:2px;-webkit-app-region:no-drag}
+    #titlebar .winbtns button{width:32px;height:28px;border:none;background:transparent;color:var(--muted);cursor:pointer;border-radius:4px;font-size:11px;transition:all 0.15s}
+    #titlebar .winbtns button:hover{background:#1e2a45;color:var(--text)}
+    #titlebar .winbtns .close:hover{background:#dc2626!important;color:white}
+
+    /* ── LAYOUT ── */
+    #app{display:flex;height:calc(100vh - 40px)}
+
+    /* ── SIDEBAR ── */
+    #sidebar{
+      width:220px;min-width:220px;
+      background:var(--bg2);border-right:1px solid var(--border);
+      display:flex;flex-direction:column;overflow:hidden;
+    }
+    .sidebar-section{padding:12px 10px 8px;border-bottom:1px solid var(--border)}
+    .sidebar-label{font-size:10px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:1px;padding:0 6px;margin-bottom:6px}
+    .nav-item{
+      display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;
+      cursor:pointer;color:var(--muted);font-size:13px;font-weight:500;transition:all 0.15s;
+    }
+    .nav-item i{width:15px;font-size:12px;text-align:center}
+    .nav-item:hover{background:var(--card);color:var(--text)}
+    .nav-item.active{background:var(--card);color:var(--text);border:1px solid var(--border)}
+
+    /* Server list in sidebar */
+    #serverList{flex:1;overflow-y:auto;padding:8px 10px}
+    .server-chip{
+      display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;
+      cursor:pointer;transition:all 0.15s;margin-bottom:4px;
+    }
+    .server-chip:hover{background:var(--card)}
+    .server-chip.active{background:var(--card);border:1px solid var(--border)}
+    .server-chip .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+    .dot-online{background:var(--green);box-shadow:0 0 5px var(--green)}
+    .dot-offline{background:var(--dim)}
+    .dot-starting{background:var(--yellow);animation:blink 1s infinite}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+    .server-chip .info{flex:1;min-width:0}
+    .server-chip .info .sname{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .server-chip .info .sgame{font-size:11px;color:var(--muted)}
+    #addServerBtn{
+      display:flex;align-items:center;gap:8px;padding:8px 10px;margin:4px 0;
+      border:1px dashed var(--border);border-radius:8px;cursor:pointer;color:var(--muted);
+      font-size:13px;transition:all 0.2s;
+    }
+    #addServerBtn:hover{border-color:var(--orange);color:var(--orange)}
+
+    /* ── MAIN ── */
+    #main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+    /* ── VIEWS ── */
+    .view{display:none;flex:1;overflow-y:auto;padding:24px}
+    .view.active{display:flex;flex-direction:column}
+
+    /* ── HOME (game picker) ── */
+    #viewHome .page-title{font-family:'Rajdhani',sans-serif;font-size:30px;font-weight:700;color:white;margin-bottom:4px}
+    #viewHome .page-sub{color:var(--muted);font-size:14px;margin-bottom:28px}
+    .games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+    .game-card{
+      background:var(--card);border:1px solid var(--border);border-radius:14px;
+      overflow:hidden;cursor:pointer;transition:all 0.25s;
+    }
+    .game-card:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,0.4)}
+    .game-card .ghead{
+      height:90px;display:flex;align-items:center;justify-content:center;
+      font-size:40px;position:relative;
+    }
+    .game-card .gbody{padding:14px 16px 16px}
+    .game-card .gname{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:white;margin-bottom:4px}
+    .game-card .gram{font-size:12px;color:var(--muted);margin-bottom:12px}
+    .game-card .gaction{
+      width:100%;padding:9px;border:none;border-radius:8px;
+      font-size:13px;font-weight:700;cursor:pointer;font-family:'Rajdhani',sans-serif;
+      transition:all 0.2s;letter-spacing:0.3px;
+    }
+
+    /* ── INSTALL VIEW ── */
+    #viewInstall{align-items:center;justify-content:center}
+    .install-box{
+      background:var(--card);border:1px solid var(--border);border-radius:20px;
+      padding:40px;width:560px;max-width:100%;
+    }
+    .install-box .game-icon{font-size:52px;margin-bottom:16px;display:block;text-align:center}
+    .install-box h2{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:white;text-align:center;margin-bottom:6px}
+    .install-box .sub{text-align:center;color:var(--muted);font-size:14px;margin-bottom:28px}
+    .progress-wrap{background:#060a14;border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px}
+    .progress-bar-outer{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:8px}
+    .progress-bar-inner{height:100%;border-radius:3px;transition:width 0.4s ease,background 0.3s;background:var(--orange)}
+    .progress-text{font-size:12px;color:var(--muted)}
+    #installLog{
+      background:#060a14;border:1px solid var(--border);border-radius:10px;
+      height:180px;overflow-y:auto;padding:12px;
+      font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.7;
+    }
+    .log-info{color:var(--muted)}
+    .log-success{color:var(--green)}
+    .log-warn{color:var(--yellow)}
+    .log-error{color:var(--red)}
+
+    /* ── SERVER VIEW ── */
+    #viewServer .server-head{
+      background:var(--card);border:1px solid var(--border);border-radius:14px;
+      padding:20px 24px;display:flex;align-items:center;justify-content:space-between;
+      flex-wrap:wrap;gap:12px;margin-bottom:16px;
+    }
+    .server-info-left{display:flex;align-items:center;gap:16px}
+    .server-game-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+    .server-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .action-btn{
+      padding:9px 18px;border:none;border-radius:9px;font-size:13px;font-weight:700;
+      cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'Rajdhani',sans-serif;
+      transition:all 0.2s;letter-spacing:0.3px;
+    }
+    .action-btn:disabled{opacity:0.35;cursor:not-allowed}
+    .btn-start{background:var(--green);color:#060a14}
+    .btn-start:hover:not(:disabled){box-shadow:0 0 20px #10b98144;transform:translateY(-1px)}
+    .btn-stop{background:var(--red);color:white}
+    .btn-stop:hover:not(:disabled){box-shadow:0 0 20px #ef444444;transform:translateY(-1px)}
+    .btn-restart{background:var(--yellow);color:#060a14}
+    .btn-restart:hover:not(:disabled){box-shadow:0 0 20px #f59e0b44;transform:translateY(-1px)}
+    .btn-secondary{background:var(--card);border:1px solid var(--border);color:var(--muted)}
+    .btn-secondary:hover{border-color:var(--border2);color:var(--text)}
+
+    /* Status badge */
+    .status-badge{padding:4px 12px;border-radius:6px;font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:6px}
+    .status-online{background:rgba(16,185,129,0.12);color:var(--green);border:1px solid rgba(16,185,129,0.25)}
+    .status-offline{background:rgba(51,65,85,0.3);color:var(--dim);border:1px solid var(--border)}
+    .status-starting{background:rgba(245,158,11,0.12);color:var(--yellow);border:1px solid rgba(245,158,11,0.25)}
+
+    /* Stats row */
+    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+    .stat-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 18px}
+    .stat-label{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
+    .stat-val{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;color:white}
+    .stat-sub{font-size:12px;color:var(--dim)}
+
+    /* Tabs */
+    .tabs{display:flex;gap:2px;background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:3px;width:fit-content;margin-bottom:14px}
+    .tab{padding:7px 16px;border:none;background:transparent;color:var(--muted);font-size:13px;font-weight:500;cursor:pointer;border-radius:7px;transition:all 0.15s;display:flex;align-items:center;gap:6px}
+    .tab i{font-size:11px}
+    .tab.active{background:var(--card);color:var(--text)}
+    .tab-panel{display:none}
+    .tab-panel.active{display:block}
+
+    /* Console */
+    #console{
+      background:#04070f;border:1px solid var(--border);
+      border-radius:12px 12px 0 0;height:300px;overflow-y:auto;padding:14px;
+      font-family:'JetBrains Mono',monospace;font-size:11.5px;line-height:1.75;
+    }
+    .con-line{display:flex;gap:10px}
+    .con-time{color:var(--dim);flex-shrink:0;font-size:10.5px}
+    .con-info{color:#94a3b8}
+    .con-success{color:var(--green)}
+    .con-warn{color:var(--yellow)}
+    .con-error{color:var(--red)}
+    #cmdBar{
+      background:#04070f;border:1px solid var(--border);border-top:1px solid var(--border2);
+      border-radius:0 0 12px 12px;display:flex;align-items:center;gap:8px;padding:10px 14px;
+    }
+    #cmdBar span{color:var(--dim);font-family:'JetBrains Mono',monospace;font-size:12px}
+    #cmdInput{
+      flex:1;background:transparent;border:none;outline:none;
+      font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text);
+    }
+    #cmdInput::placeholder{color:var(--border2)}
+    #cmdBar button{background:transparent;border:none;color:var(--dim);cursor:pointer;padding:4px;font-size:12px}
+    #cmdBar button:hover{color:var(--muted)}
+
+    /* Config panel */
+    .cfg-sectabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:16px}
+    .cfg-sectab{padding:6px 14px;border:1px solid var(--border);border-radius:7px;background:transparent;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:6px}
+    .cfg-sectab i{font-size:11px}
+    .cfg-sectab.active{background:var(--card);color:var(--text);border-color:var(--border2)}
+    .cfg-section{display:none}
+    .cfg-section.active{display:block}
+    .config-panel{background:#04070f;border:1px solid var(--border);border-radius:12px;padding:18px}
+    .config-row{display:flex;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--bg2);gap:14px}
+    .config-row:last-child{border-bottom:none}
+    .config-lbl{flex:0 0 180px;padding-top:4px}
+    .config-lbl .lbl-main{font-size:13px;color:var(--text);font-weight:500}
+    .config-lbl .lbl-desc{font-size:11px;color:var(--dim);margin-top:2px}
+    .config-right{flex:1;min-width:0}
+    .config-input{
+      width:100%;background:var(--card);border:1px solid var(--border);border-radius:7px;
+      padding:7px 10px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;
+      outline:none;transition:border-color 0.2s;
+    }
+    .config-input:focus{border-color:var(--orange)}
+    select.config-input{cursor:pointer}
+    select.config-input option{background:var(--card)}
+    .range-wrap{display:flex;align-items:center;gap:10px}
+    .range-wrap input[type=range]{flex:1;accent-color:var(--orange);cursor:pointer}
+    .range-val{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--orange);min-width:42px;text-align:center}
+    .mods-panel textarea{width:100%;background:var(--card);border:1px solid var(--border);border-radius:9px;padding:12px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;resize:vertical;min-height:120px;outline:none;line-height:1.7}
+    .mods-panel textarea:focus{border-color:var(--orange)}
+    .mods-panel .mods-desc{font-size:12px;color:var(--dim);margin-bottom:10px;line-height:1.6}
+    .mods-panel .mods-link{color:var(--cyan);text-decoration:none;cursor:pointer}
+    .mods-panel .mods-link:hover{text-decoration:underline}
+    .save-cfg-btn{
+      margin-top:16px;padding:10px 24px;background:var(--green);color:#060a14;
+      border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;
+      font-family:'Rajdhani',sans-serif;transition:all 0.2s;display:inline-flex;align-items:center;gap:8px;
+    }
+    .save-cfg-btn:hover{box-shadow:0 0 20px #10b98144}
+
+    /* Toast */
+    #toast{
+      position:fixed;bottom:20px;right:20px;
+      background:var(--card);border:1px solid var(--border);border-radius:10px;
+      padding:12px 18px;display:flex;align-items:center;gap:10px;font-size:13px;
+      transform:translateY(60px);opacity:0;transition:all 0.3s;z-index:999;
+    }
+    #toast.show{transform:translateY(0);opacity:1}
+
+    /* Empty state */
+    .empty-state{
+      flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+      color:var(--dim);text-align:center;gap:12px;
+    }
+    .empty-state i{font-size:48px;opacity:0.3}
+    .empty-state p{font-size:15px}
+
+    /* Modal overlay */
+    #modalOverlay{
+      display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);
+      z-index:200;align-items:center;justify-content:center;
+    }
+    #modalOverlay.show{display:flex}
+    .modal{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;width:440px;max-width:90%}
+    .modal h3{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:white;margin-bottom:20px}
+    .form-group{margin-bottom:16px}
+    .form-label{font-size:12px;color:var(--muted);margin-bottom:6px;display:block;font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+    .form-input{
+      width:100%;background:#060a14;border:1px solid var(--border);border-radius:9px;
+      padding:10px 14px;color:var(--text);font-size:14px;outline:none;transition:border-color 0.2s;
+    }
+    .form-input:focus{border-color:var(--orange)}
+    .modal-actions{display:flex;gap:10px;margin-top:24px;justify-content:flex-end}
+    .modal-actions button{padding:10px 22px;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Rajdhani',sans-serif}
+    .btn-cancel{background:var(--bg2);color:var(--muted)}
+    .btn-confirm{background:var(--orange);color:white}
+
+    /* ── CLUSTER SIDEBAR ── */
+    .cluster-group{margin-bottom:6px;border:1px solid rgba(0,212,255,0.2);border-radius:10px;overflow:hidden}
+    .cluster-header{display:flex;align-items:center;gap:7px;padding:7px 10px;background:rgba(0,212,255,0.06);font-size:10px;font-weight:700;color:var(--cyan);text-transform:uppercase;letter-spacing:0.5px}
+    .cluster-header i{font-size:9px}
+    .cluster-count{margin-left:auto;color:var(--dim);font-weight:400;text-transform:none;letter-spacing:0}
+    .cluster-group .server-chip{border-radius:0;margin-bottom:0;border-left:2px solid rgba(0,212,255,0.35);padding-left:12px}
+
+    /* ── DELETE BUTTON ON CHIP ── */
+    .chip-del{background:none;border:none;color:transparent;cursor:pointer;font-size:11px;padding:4px 6px;border-radius:5px;opacity:0;transition:all 0.15s;line-height:1;flex-shrink:0}
+    .server-chip:hover .chip-del{opacity:1;color:var(--dim)}
+    .chip-del:hover{background:rgba(239,68,68,0.2)!important;color:var(--red)!important}
+
+    /* ── LICENSE BADGE (header) ── */
+    #licenseBadge{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600;letter-spacing:0.02em;cursor:default;white-space:nowrap}
+    #licenseBadge.trial{background:rgba(251,191,36,0.15);color:#fbbf24;border:1px solid rgba(251,191,36,0.3)}
+    #licenseBadge.trial.urgent{background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid rgba(239,68,68,0.3);animation:pulse 2s infinite}
+    #licenseBadge.active{background:rgba(34,197,94,0.15);color:#22c55e;border:1px solid rgba(34,197,94,0.3)}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
+
+    /* ── LICENSE OVERLAY (paywall) ── */
+    #licenseOverlay{
+      position:fixed;inset:0;z-index:9999;
+      background:rgba(6,10,20,0.97);
+      display:flex;align-items:center;justify-content:center;
+      -webkit-app-region:no-drag;
+    }
+    #licenseOverlay.hidden{display:none}
+    .lic-box{
+      width:480px;background:var(--card);border:1px solid rgba(255,100,30,0.35);
+      border-radius:16px;padding:40px;text-align:center;
+    }
+    .lic-box .lic-icon{font-size:56px;margin-bottom:16px;display:block}
+    .lic-box h2{font-size:22px;font-weight:700;color:#fff;margin:0 0 8px}
+    .lic-box .lic-sub{font-size:13px;color:var(--dim);margin:0 0 28px;line-height:1.5}
+    .lic-divider{border:none;border-top:1px solid var(--border);margin:24px 0}
+    .lic-id-wrap{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:20px;text-align:left}
+    .lic-id-label{font-size:10px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px}
+    .lic-id-val{font-family:'Courier New',monospace;font-size:16px;color:#f97316;font-weight:700;letter-spacing:0.1em}
+    .lic-input-wrap{display:flex;gap:8px;margin-bottom:12px}
+    .lic-input-wrap input{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:#fff;font-family:'Courier New',monospace;font-size:13px;letter-spacing:0.05em;outline:none}
+    .lic-input-wrap input:focus{border-color:var(--accent)}
+    .lic-input-wrap input.error{border-color:var(--red)}
+    .lic-error{font-size:12px;color:var(--red);min-height:18px;margin-bottom:12px;text-align:left}
+    .lic-btn-primary{width:100%;background:var(--accent);border:none;border-radius:8px;padding:12px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;transition:opacity 0.15s}
+    .lic-btn-primary:hover{opacity:0.85}
+    .lic-btn-secondary{background:none;border:none;color:var(--dim);font-size:12px;cursor:pointer;margin-top:12px;text-decoration:underline}
+    .lic-btn-secondary:hover{color:#fff}
+    .lic-how{font-size:12px;color:var(--dim);line-height:1.6;text-align:left;background:var(--bg);border-radius:8px;padding:12px 14px}
+    .lic-how strong{color:var(--text)}
+    .lic-how ol{margin:6px 0 0 14px;padding:0}
+    .lic-how li{margin-bottom:4px}
+
+    /* ── SETTINGS VIEW ── */
+    .settings-grid{display:flex;flex-direction:column;gap:16px;max-width:680px}
+    .settings-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+    .sc-header{display:flex;align-items:center;gap:10px;font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:white;padding:18px 20px 14px;border-bottom:1px solid var(--border)}
+    .sc-header i{font-size:15px}
+    .sc-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 20px;border-bottom:1px solid var(--bg2)}
+    .sc-row:last-child{border-bottom:none}
+    .sc-lbl{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;font-weight:700}
+    .sc-val{font-size:13px;color:var(--text)}
+    .game-install-row{display:flex;align-items:center;gap:14px;padding:12px 20px;border-bottom:1px solid var(--bg2)}
+    .game-install-row:last-child{border-bottom:none}
+    .badge-installed{background:rgba(16,185,129,0.12);color:var(--green);border:1px solid rgba(16,185,129,0.25);font-size:11px;font-weight:700;padding:3px 9px;border-radius:5px}
+    .badge-not-installed{background:rgba(51,65,85,0.3);color:var(--dim);border:1px solid var(--border);font-size:11px;font-weight:700;padding:3px 9px;border-radius:5px}
+  </style>
+</head>
+<body>
+
+<!-- ─── TITLEBAR ──────────────────────────────────────────────────── -->
+<div id="titlebar">
+  <div class="logo">
+    <div class="icon"><i class="fas fa-fire" style="color:white;font-size:11px"></i></div>
+    <span>INFERNO<em>HOST</em></span>
+  </div>
+  <div style="position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;-webkit-app-region:no-drag">
+    <span class="wintitle" style="position:static;transform:none">Game Server Manager</span>
+    <span id="licenseBadge" class="trial" style="display:none"></span>
+  </div>
+  <div class="winbtns">
+    <button onclick="api.minimize()" title="Minimizar"><i class="fas fa-minus"></i></button>
+    <button onclick="api.maximize()" title="Maximizar"><i class="fas fa-square" style="font-size:9px"></i></button>
+    <button class="close" onclick="api.close()" title="Cerrar"><i class="fas fa-xmark"></i></button>
+  </div>
+</div>
+
+<!-- ─── APP ──────────────────────────────────────────────────────── -->
+<div id="app">
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Navegación</div>
+      <div class="nav-item active" id="navHome" onclick="showView('home')">
+        <i class="fas fa-house"></i> Inicio
+      </div>
+      <div class="nav-item" id="navSettings" onclick="showView('settings')">
+        <i class="fas fa-sliders"></i> Configuración
+      </div>
+    </div>
+
+    <div style="padding:12px 10px 6px;">
+      <div class="sidebar-label">Mis Servidores</div>
+      <div id="serverList"></div>
+      <div id="addServerBtn" onclick="showView('home')">
+        <i class="fas fa-plus" style="font-size:12px"></i> Nuevo servidor
+      </div>
+    </div>
+
+    <!-- Footer sidebar -->
+    <div style="padding:12px 16px;border-top:1px solid var(--border);margin-top:auto;">
+      <div style="font-size:11px;color:var(--dim);">InfernoHost Manager</div>
+      <div style="font-size:10px;color:var(--border2);">v1.0.0 · Beta</div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div id="main">
+
+    <!-- ─ VIEW: HOME (game selection) ─ -->
+    <div class="view active" id="viewHome">
+      <div class="page-title">Crear nuevo servidor</div>
+      <div class="page-sub">Elegí el juego e InfernoHost se encarga de instalarlo y configurarlo.</div>
+      <div class="games-grid" id="gamesGrid"></div>
+    </div>
+
+    <!-- ─ VIEW: INSTALL ─ -->
+    <div class="view" id="viewInstall" style="align-items:center;justify-content:center;">
+      <div class="install-box">
+        <span class="game-icon" id="installIcon"></span>
+        <h2 id="installTitle">Instalando...</h2>
+        <p class="sub" id="installSub">Esto puede tomar varios minutos dependiendo de tu conexión.</p>
+
+        <div class="progress-wrap">
+          <div class="progress-bar-outer">
+            <div class="progress-bar-inner" id="progressBar" style="width:0%"></div>
+          </div>
+          <div class="progress-text" id="progressText">Iniciando...</div>
+        </div>
+
+        <div id="installLog" class="mono"></div>
+
+        <div style="display:flex;gap:10px;margin-top:16px;" id="installActions">
+          <button class="action-btn btn-secondary" id="cancelInstall" onclick="showView('home')" style="flex:1;justify-content:center;">
+            <i class="fas fa-arrow-left"></i> Cancelar
+          </button>
+          <button class="action-btn btn-start" id="openServerBtn" onclick="openInstalledServer()" style="flex:1;justify-content:center;display:none;">
+            <i class="fas fa-play"></i> Abrir servidor
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─ VIEW: SERVER MANAGER ─ -->
+    <div class="view" id="viewServer">
+
+      <!-- Header -->
+      <div class="server-head">
+        <div class="server-info-left">
+          <div class="server-game-icon" id="svrIcon"></div>
+          <div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+              <span id="svrName" class="gaming" style="font-size:24px;color:white;"></span>
+              <span id="svrStatusBadge"></span>
+            </div>
+            <div style="font-size:12px;color:var(--muted);display:flex;gap:16px;">
+              <span><i class="fas fa-gamepad" style="font-size:10px;margin-right:4px;"></i><span id="svrGame"></span></span>
+              <span><i class="fas fa-network-wired" style="font-size:10px;margin-right:4px;"></i><span id="svrIP" class="mono" style="font-size:11px;"></span></span>
+            </div>
+          </div>
+        </div>
+        <div class="server-actions">
+          <button class="action-btn btn-start"    id="btnStart"   onclick="serverAction('start')"><i class="fas fa-play"></i> Iniciar</button>
+          <button class="action-btn btn-stop"     id="btnStop"    onclick="serverAction('stop')"><i class="fas fa-stop"></i> Detener</button>
+          <button class="action-btn btn-restart"  id="btnRestart" onclick="serverAction('restart')"><i class="fas fa-rotate-right"></i> Reiniciar</button>
+          <button class="action-btn btn-secondary" onclick="api.openFolder(currentServer?.gameId)" title="Abrir carpeta"><i class="fas fa-folder-open"></i></button>
+          <button class="action-btn btn-secondary" id="btnPorts" onclick="openPorts()" title="Abrir puertos en Firewall"><i class="fas fa-shield-halved"></i> Puertos</button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-label"><i class="fas fa-clock" style="margin-right:4px;font-size:9px;"></i>Uptime</div>
+          <div class="stat-val" id="statUptime">—</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label"><i class="fas fa-users" style="margin-right:4px;font-size:9px;"></i>Puerto</div>
+          <div class="stat-val" id="statPort">—</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label"><i class="fas fa-memory" style="margin-right:4px;font-size:9px;"></i>RAM asignada</div>
+          <div class="stat-val" id="statRam">—</div>
+          <div class="stat-sub">GB</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label"><i class="fas fa-circle-dot" style="margin-right:4px;font-size:9px;"></i>Estado</div>
+          <div class="stat-val" id="statStatus" style="font-size:18px;"></div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab active" onclick="showTab('console')"><i class="fas fa-terminal"></i> Consola</button>
+        <button class="tab"        onclick="showTab('config')"><i class="fas fa-sliders"></i> Config</button>
+      </div>
+
+      <!-- Console panel -->
+      <div class="tab-panel active" id="tabConsole">
+        <div id="console"></div>
+        <div id="cmdBar">
+          <span>$</span>
+          <input id="cmdInput" type="text" placeholder="Escribí un comando..." onkeydown="handleCmd(event)">
+          <button onclick="handleCmd({key:'Enter'})"><i class="fas fa-paper-plane"></i></button>
+        </div>
+      </div>
+
+      <!-- Config panel -->
+      <div class="tab-panel" id="tabConfig">
+        <div class="config-panel">
+          <div id="configFields"></div>
+          <button class="save-cfg-btn" onclick="saveConfig()"><i class="fas fa-save" style="margin-right:6px;font-size:12px;"></i>Guardar y reiniciar</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ─ VIEW: SETTINGS ─ -->
+    <div class="view" id="viewSettings">
+      <div class="page-title">Configuración</div>
+      <div class="page-sub" style="margin-bottom:24px;">Información de la app y juegos instalados.</div>
+
+      <div class="settings-grid">
+
+        <!-- App Info -->
+        <div class="settings-card">
+          <div class="sc-header">
+            <i class="fas fa-circle-info" style="color:var(--cyan)"></i> Sobre la app
+          </div>
+          <div class="sc-row">
+            <div>
+              <div class="sc-lbl">Aplicación</div>
+              <div class="sc-val" style="display:flex;align-items:center;gap:10px;">
+                <div class="icon" style="width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,#ff6b35,#dc2626);display:flex;align-items:center;justify-content:center;"><i class="fas fa-fire" style="color:white;font-size:11px"></i></div>
+                <span>InfernoHost Manager &nbsp;<span style="color:var(--dim);font-size:12px;">v1.0.0 Beta</span></span>
+              </div>
+            </div>
+          </div>
+          <div class="sc-row">
+            <div style="min-width:0;flex:1;">
+              <div class="sc-lbl">Carpeta de datos</div>
+              <div class="sc-val mono" id="settingsDataDir" style="font-size:11px;word-break:break-all;color:var(--muted);"></div>
+            </div>
+            <button class="action-btn btn-secondary" style="flex-shrink:0;" onclick="api.openDataFolder()">
+              <i class="fas fa-folder-open"></i> Abrir
+            </button>
+          </div>
+          <div class="sc-row">
+            <div style="min-width:0;flex:1;">
+              <div class="sc-lbl">Carpeta de servidores</div>
+              <div class="sc-val mono" id="settingsServersDir" style="font-size:11px;word-break:break-all;color:var(--muted);"></div>
+            </div>
+            <button class="action-btn btn-secondary" style="flex-shrink:0;" onclick="openServersFolder()">
+              <i class="fas fa-folder-open"></i> Abrir
+            </button>
+          </div>
+        </div>
+
+        <!-- Java Info -->
+        <div class="settings-card">
+          <div class="sc-header">
+            <i class="fas fa-coffee" style="color:var(--yellow)"></i> Java (para Minecraft)
+          </div>
+          <div class="sc-row">
+            <div>
+              <div class="sc-lbl">Estado</div>
+              <div class="sc-val" id="settingsJavaStatus" style="color:var(--dim);">Verificando...</div>
+            </div>
+            <button class="action-btn btn-secondary" id="settingsJavaBtn" onclick="reinstallJava()" style="flex-shrink:0;display:none;">
+              <i class="fas fa-download"></i> Reinstalar Java 21
+            </button>
+          </div>
+        </div>
+
+        <!-- Installed Games -->
+        <div class="settings-card">
+          <div class="sc-header">
+            <i class="fas fa-hard-drive" style="color:var(--orange)"></i> Juegos instalados
+          </div>
+          <div id="settingsGames">
+            <div style="padding:20px;color:var(--dim);font-size:13px;display:flex;align-items:center;gap:10px;">
+              <i class="fas fa-spinner fa-spin"></i> Verificando instalaciones...
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ─ VIEW: EMPTY ─ -->
+    <div class="view" id="viewEmpty">
+      <div class="empty-state">
+        <i class="fas fa-server"></i>
+        <p>No tenés servidores todavía.</p>
+        <button class="action-btn btn-secondary" onclick="showView('home')" style="margin-top:8px;">
+          <i class="fas fa-plus"></i> Crear mi primer servidor
+        </button>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ─── MODAL: Server name ─── -->
+<div id="modalOverlay">
+  <div class="modal">
+    <h3 id="modalTitle">Configurar servidor</h3>
+    <div class="form-group">
+      <label class="form-label">Nombre del servidor</label>
+      <input class="form-input" id="modalName" type="text" placeholder="Ej: El server de los pibes" maxlength="32">
+    </div>
+    <div class="form-group">
+      <label class="form-label">RAM asignada (GB)</label>
+      <input class="form-input" id="modalRam" type="number" value="4" min="1" max="30">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Contraseña (opcional)</label>
+      <input class="form-input" id="modalPass" type="text" placeholder="Dejar vacío para servidor público">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-confirm" id="modalConfirm">Instalar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── MODAL: Guía de Puertos ─── -->
+<div id="portsOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:300;align-items:center;justify-content:center;">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:18px;padding:32px;width:540px;max-width:95%;max-height:85vh;overflow-y:auto;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#ff6b35,#dc2626);display:flex;align-items:center;justify-content:center;">
+          <i class="fas fa-shield-halved" style="color:white;font-size:16px;"></i>
+        </div>
+        <div>
+          <div style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:white;">Configurar Puertos</div>
+          <div style="font-size:12px;color:var(--muted);">Para que tus amigos puedan conectarse</div>
+        </div>
+      </div>
+      <button onclick="closePortsModal()" style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;width:32px;height:32px;color:var(--muted);cursor:pointer;font-size:14px;">✕</button>
+    </div>
+
+    <!-- Info del servidor -->
+    <div style="background:#060a14;border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:24px;">
+      <div style="font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">Tu servidor necesita este puerto abierto</div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;">
+        <div><span style="color:var(--muted);font-size:12px;">IP local:</span> <span id="pgLocalIp" class="mono" style="color:var(--cyan);font-size:14px;font-weight:600;"></span></div>
+        <div><span style="color:var(--muted);font-size:12px;">Puerto:</span> <span id="pgPort" class="mono" style="color:var(--orange);font-size:14px;font-weight:600;"></span></div>
+        <div><span style="color:var(--muted);font-size:12px;">Protocolo:</span> <span id="pgProto" class="mono" style="color:var(--text);font-size:14px;font-weight:600;"></span></div>
+      </div>
+    </div>
+
+    <!-- Paso 1: Firewall -->
+    <div style="margin-bottom:20px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <div style="width:24px;height:24px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;flex-shrink:0;">1</div>
+        <span style="font-weight:600;color:white;">Firewall de Windows</span>
+        <span id="pgFirewallStatus" style="font-size:11px;color:var(--muted);">Pendiente</span>
+      </div>
+      <div style="background:#060a14;border:1px solid var(--border);border-radius:10px;padding:14px;margin-left:34px;">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">La app puede abrir este puerto automáticamente en el Firewall de Windows.</p>
+        <button id="pgFirewallBtn" onclick="applyFirewall()" style="padding:9px 18px;border:none;border-radius:8px;background:var(--orange);color:white;font-weight:700;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:14px;">
+          <i class="fas fa-wand-magic-sparkles" style="margin-right:6px;"></i>Aplicar automáticamente
+        </button>
+      </div>
+    </div>
+
+    <!-- Paso 2: Router -->
+    <div style="margin-bottom:20px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <div style="width:24px;height:24px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;flex-shrink:0;">2</div>
+        <span style="font-weight:600;color:white;">Panel del Router</span>
+      </div>
+      <div style="background:#060a14;border:1px solid var(--border);border-radius:10px;padding:14px;margin-left:34px;">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:10px;">Tu router tiene un panel de configuración. Lo abrimos en el navegador:</p>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <span style="font-size:12px;color:var(--dim);">IP del router:</span>
+          <span id="pgGateway" class="mono" style="color:var(--cyan);font-size:14px;font-weight:600;">detectando...</span>
+          <button onclick="openRouter()" style="padding:7px 14px;border:none;border-radius:7px;background:var(--card);border:1px solid var(--border);color:var(--text);cursor:pointer;font-size:12px;display:flex;align-items:center;gap:6px;">
+            <i class="fas fa-arrow-up-right-from-square"></i> Abrir en navegador
+          </button>
+        </div>
+        <p style="font-size:12px;color:var(--dim);">Si no abre, escribí esa IP directamente en el navegador.</p>
+      </div>
+    </div>
+
+    <!-- Paso 3: Configurar -->
+    <div style="margin-bottom:20px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <div style="width:24px;height:24px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;flex-shrink:0;">3</div>
+        <span style="font-weight:600;color:white;">Configurar Port Forwarding</span>
+      </div>
+      <div style="background:#060a14;border:1px solid var(--border);border-radius:10px;padding:14px;margin-left:34px;">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Dentro del panel del router, buscá una sección llamada:</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
+          <span style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:12px;color:var(--text);">Port Forwarding</span>
+          <span style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:12px;color:var(--text);">Reenvío de Puertos</span>
+          <span style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:12px;color:var(--text);">Virtual Servers</span>
+          <span style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:12px;color:var(--text);">NAT</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div style="background:var(--bg2);border-radius:8px;padding:10px;">
+            <div style="font-size:10px;color:var(--dim);margin-bottom:4px;">Campo</div>
+            <div style="font-size:11px;color:var(--muted);">IP / Host destino</div>
+            <div style="font-size:11px;color:var(--muted);">Puerto externo</div>
+            <div style="font-size:11px;color:var(--muted);">Puerto interno</div>
+            <div style="font-size:11px;color:var(--muted);">Protocolo</div>
+          </div>
+          <div style="background:var(--bg2);border-radius:8px;padding:10px;">
+            <div style="font-size:10px;color:var(--dim);margin-bottom:4px;">Valor</div>
+            <div class="mono" id="pgFillIp" style="font-size:11px;color:var(--cyan);"></div>
+            <div class="mono" id="pgFillPort1" style="font-size:11px;color:var(--orange);"></div>
+            <div class="mono" id="pgFillPort2" style="font-size:11px;color:var(--orange);"></div>
+            <div class="mono" id="pgFillProto" style="font-size:11px;color:var(--text);"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Paso 4: IP pública -->
+    <div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <div style="width:24px;height:24px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;flex-shrink:0;">4</div>
+        <span style="font-weight:600;color:white;">Compartí tu IP pública con tus amigos</span>
+      </div>
+      <div style="background:#060a14;border:1px solid var(--border);border-radius:10px;padding:14px;margin-left:34px;">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:10px;">Tu IP pública es la que cambia cada vez que reiniciás el router. Buscala en:</p>
+        <button onclick="api.openUrl('https://www.whatismyip.com')" style="padding:8px 14px;border:none;border-radius:7px;background:var(--card);border:1px solid var(--border);color:var(--text);cursor:pointer;font-size:12px;display:inline-flex;align-items:center;gap:6px;">
+          <i class="fas fa-globe"></i> whatismyip.com
+        </button>
+        <p style="font-size:12px;color:var(--dim);margin-top:10px;">💡 Si el IP cambia seguido, considerá un servicio de DNS dinámico como <strong style="color:var(--muted)">No-IP</strong> o <strong style="color:var(--muted)">DuckDNS</strong> (gratuitos).</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ─── MODAL: Confirmar eliminación ─── -->
+<div id="deleteOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:400;align-items:center;justify-content:center;">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;width:380px;max-width:92%;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+      <div style="width:42px;height:42px;border-radius:11px;background:rgba(239,68,68,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i class="fas fa-trash-can" style="color:var(--red);font-size:17px;"></i>
+      </div>
+      <div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:white;">Eliminar servidor</div>
+        <div style="font-size:12px;color:var(--dim);">Esta acción no se puede deshacer</div>
+      </div>
+    </div>
+    <p id="deleteMsg" style="font-size:14px;color:var(--text);margin-bottom:12px;line-height:1.5;"></p>
+    <div style="background:#060a14;border:1px solid var(--border);border-radius:9px;padding:12px;margin-bottom:22px;display:flex;gap:10px;">
+      <i class="fas fa-circle-info" style="color:var(--cyan);margin-top:2px;flex-shrink:0;"></i>
+      <p style="font-size:12px;color:var(--dim);line-height:1.6;margin:0;">Los archivos del juego instalados en disco <strong style="color:var(--muted)">no se eliminan</strong>. Solo se borra la configuración de este servidor en la app.</p>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button onclick="closeDeleteModal()" style="padding:10px 20px;background:var(--bg2);border:1px solid var(--border);border-radius:9px;color:var(--muted);cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;">Cancelar</button>
+      <button onclick="confirmDelete()" style="padding:10px 20px;background:var(--red);border:none;border-radius:9px;color:white;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px;"><i class="fas fa-trash-can"></i> Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── LICENSE OVERLAY (paywall) ─── -->
+<div id="licenseOverlay" class="hidden">
+  <div class="lic-box">
+    <span class="lic-icon">🔥</span>
+    <h2>Tu prueba gratuita expiró</h2>
+    <p class="lic-sub">
+      Gracias por probar <strong>InfernoHost Manager</strong> durante 30 días.<br>
+      Para seguir usando todas las funciones, activá tu licencia.
+    </p>
+
+    <div class="lic-divider"></div>
+
+    <!-- ID de la máquina -->
+    <div class="lic-id-wrap">
+      <div class="lic-id-label">ID de tu máquina (envialo al comprar)</div>
+      <div class="lic-id-val" id="licMachineId">—</div>
+    </div>
+
+    <!-- Instrucciones -->
+    <div class="lic-how" style="margin-bottom:20px;">
+      <strong>¿Cómo activar?</strong>
+      <ol>
+        <li>Copiá el ID de tu máquina de arriba.</li>
+        <li>Contactá al vendedor y enviá el ID junto con tu compra.</li>
+        <li>Recibirás una clave del tipo <code>INFERNO-XXXX-XXXX-XXXX-XXXX</code>.</li>
+        <li>Pegá la clave abajo y hacé clic en <strong>Activar</strong>.</li>
+      </ol>
+    </div>
+
+    <!-- Botón de contacto -->
+    <button class="lic-btn-primary" style="margin-bottom:10px;background:rgba(249,115,22,0.85);"
+      onclick="api.openUrl('https://wa.me/+5492954368999?text=Quiero%20activar%20InfernoHost.%20Mi%20ID%3A%20'+encodeURIComponent(document.getElementById(\'licMachineId\').textContent))"
+    >
+      <i class="fab fa-whatsapp"></i> Contactar para comprar
+    </button>
+
+    <div class="lic-divider"></div>
+
+    <!-- Input de clave -->
+    <p style="font-size:12px;color:var(--dim);margin:0 0 10px;text-align:left;">¿Ya tenés tu clave?</p>
+    <div class="lic-input-wrap">
+      <input type="text" id="licKeyInput" placeholder="INFERNO-XXXX-XXXX-XXXX-XXXX"
+        oninput="this.value=this.value.toUpperCase();document.getElementById('licError').textContent='';this.classList.remove('error')"
+        onkeydown="if(event.key==='Enter')activateLicenseUI()"
+      >
+    </div>
+    <div class="lic-error" id="licError"></div>
+    <button class="lic-btn-primary" onclick="activateLicenseUI()">
+      <i class="fas fa-key"></i> Activar licencia
+    </button>
+  </div>
+</div>
+
+<!-- ─── TOAST ─── -->
+<div id="toast">
+  <i id="toastIcon" class="fas fa-check-circle"></i>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+// ─── STATE ──────────────────────────────────────────────────────────────────
+let servers       = [];
+let currentServer = null;
+let installingGame = null;
+let uptimeStart   = null;
+let uptimeInterval = null;
+let GAMES         = {};
+
+const GAME_CONFIGS = {
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // MINECRAFT
+  // ══════════════════════════════════════════════════════════════════════════
+  minecraft: { sections: [
+    { id:'general', title:'General', icon:'fa-server', fields:[
+      { key:'server-name',   label:'Nombre del servidor', type:'text',   default:'Mi Server InfernoHost', desc:'Nombre visible en la lista de servidores' },
+      { key:'server-port',   label:'Puerto',              type:'number', default:'25565', desc:'Puerto TCP donde escucha el servidor' },
+      { key:'max-players',   label:'Máx jugadores',       type:'number', default:'20' },
+      { key:'motd',          label:'Mensaje del día',     type:'text',   default:'Servidor InfernoHost', desc:'Texto bajo el nombre en la lista de servidores' },
+      { key:'online-mode',   label:'Cuentas oficiales',   type:'select', options:['true','false'], default:'false', desc:'false = acepta cuentas piratas / no oficiales' },
+      { key:'white-list',    label:'Whitelist',           type:'select', options:['false','true'], default:'false', desc:'Solo jugadores en la lista blanca pueden entrar' },
+      { key:'enforce-whitelist', label:'Aplicar whitelist en caliente', type:'select', options:['false','true'], default:'false' },
+      { key:'op-permission-level', label:'Nivel de permiso de OPs', type:'select', options:['1','2','3','4'], default:'4', desc:'1=solo bypass spawn, 4=admin completo' },
+    ]},
+    { id:'gameplay', title:'Gameplay', icon:'fa-gamepad', fields:[
+      { key:'gamemode',         label:'Modo de juego',    type:'select', options:['survival','creative','adventure','spectator'], default:'survival' },
+      { key:'force-gamemode',   label:'Forzar modo',      type:'select', options:['false','true'], default:'false', desc:'Pone el modo de juego a todos al entrar' },
+      { key:'difficulty',       label:'Dificultad',       type:'select', options:['peaceful','easy','normal','hard'], default:'normal' },
+      { key:'hardcore',         label:'Hardcore',         type:'select', options:['false','true'], default:'false', desc:'Al morir se borra el personaje' },
+      { key:'pvp',              label:'PvP',              type:'select', options:['true','false'], default:'true' },
+      { key:'allow-nether',     label:'Nether',           type:'select', options:['true','false'], default:'true' },
+      { key:'allow-flight',     label:'Permitir volar',   type:'select', options:['false','true'], default:'false', desc:'Permite volar sin modo creativo (útil con mods)' },
+      { key:'spawn-monsters',   label:'Spawnear monstruos', type:'select', options:['true','false'], default:'true' },
+      { key:'spawn-animals',    label:'Spawnear animales',  type:'select', options:['true','false'], default:'true' },
+      { key:'spawn-npcs',       label:'Spawnear aldeanos',  type:'select', options:['true','false'], default:'true' },
+      { key:'enable-command-block', label:'Bloques de comandos', type:'select', options:['false','true'], default:'false' },
+      { key:'generate-structures',  label:'Generar estructuras', type:'select', options:['true','false'], default:'true', desc:'Aldeas, templos, fortalezas, etc.' },
+    ]},
+    { id:'world', title:'Mundo', icon:'fa-earth-americas', fields:[
+      { key:'level-name',          label:'Nombre del mundo',    type:'text',   default:'world', desc:'Nombre de la carpeta del mundo' },
+      { key:'level-type',          label:'Tipo de mundo',       type:'select', options:['minecraft:default','minecraft:flat','minecraft:large_biomes','minecraft:amplified','minecraft:single_biome_surface'], default:'minecraft:default' },
+      { key:'level-seed',          label:'Semilla',             type:'text',   default:'', desc:'Vacío = semilla aleatoria cada vez' },
+      { key:'view-distance',       label:'Vista (chunks)',      type:'range',  min:2, max:32, step:1, default:'10', desc:'Mayor valor = más carga del servidor' },
+      { key:'simulation-distance', label:'Simulación (chunks)', type:'range',  min:2, max:32, step:1, default:'10' },
+      { key:'max-world-size',      label:'Tamaño máx del mundo', type:'number', default:'60000000' },
+      { key:'max-build-height',    label:'Altura máx de construcción', type:'number', default:'384' },
+    ]},
+    { id:'rendimiento', title:'Rendimiento', icon:'fa-gauge', fields:[
+      { key:'entity-broadcast-range-percentage', label:'Rango de entidades (%)', type:'range', min:10, max:1000, step:10, default:'100', desc:'100% = vanilla. Menor = mejor performance' },
+      { key:'max-tick-time',                     label:'Max tick (ms)',           type:'number', default:'60000', desc:'-1 = sin límite (útil para servidores lentos)' },
+      { key:'network-compression-threshold',     label:'Compresión de red',      type:'number', default:'256', desc:'-1 = desactivado, 0 = siempre comprimir' },
+      { key:'rate-limit',                        label:'Límite paquetes/jugador', type:'number', default:'0', desc:'0 = sin límite' },
+      { key:'sync-chunk-writes',                 label:'Escritura sync de chunks', type:'select', options:['true','false'], default:'true' },
+      { key:'enforce-secure-profile',            label:'Chat seguro (firmar mensajes)', type:'select', options:['false','true'], default:'false' },
+      { key:'prevent-proxy-connections',         label:'Bloquear proxies/VPN', type:'select', options:['false','true'], default:'false' },
+    ]},
+    { id:'rcon', title:'RCON', icon:'fa-terminal', fields:[
+      { key:'enable-rcon',          label:'Activar RCON',       type:'select', options:['false','true'], default:'false', desc:'Control remoto del servidor via protocolo RCON' },
+      { key:'rcon.port',            label:'Puerto RCON',        type:'number', default:'25575' },
+      { key:'rcon.password',        label:'Password RCON',      type:'password', default:'', desc:'Contraseña para conectarse al RCON' },
+      { key:'broadcast-rcon-to-ops', label:'Broadcast RCON a OPs', type:'select', options:['true','false'], default:'true' },
+      { key:'enable-query',         label:'Activar Query (listado)',  type:'select', options:['false','true'], default:'false', desc:'Permite listar jugadores online remotamente' },
+      { key:'query.port',           label:'Puerto Query',       type:'number', default:'25565' },
+    ]},
+    { id:'plugins', title:'Plugins / Mods', icon:'fa-puzzle-piece', type:'mods',
+      desc:'Plugins .jar van en la carpeta /plugins. Mods Fabric/Forge van en /mods. Instalá el servidor apropiado (Spigot/Fabric/Forge). Buscá en:',
+      workshopUrl: 'https://modrinth.com/plugins' },
+  ]},
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // ARK: SURVIVAL ASCENDED
+  // ══════════════════════════════════════════════════════════════════════════
+  ark: { sections: [
+    { id:'general', title:'General', icon:'fa-server', fields:[
+      { key:'SessionName',         label:'Nombre del servidor', type:'text',     default:'Mi ARK Server', desc:'Nombre visible en el listado de servidores' },
+      { key:'Port',                label:'Puerto del juego',    type:'number',   default:'7777', desc:'Puerto TCP/UDP principal' },
+      { key:'QueryPort',           label:'Puerto Steam Query',  type:'number',   default:'27016', desc:'Para la búsqueda en Steam (+1 al puerto del juego)' },
+      { key:'MaxPlayers',          label:'Máx jugadores',       type:'number',   default:'70' },
+      { key:'ServerAdminPassword', label:'Password admin',      type:'password', default:'admin123', desc:'Para acceder como admin in-game con "enablecheats"' },
+      { key:'ServerPassword',      label:'Password de entrada', type:'password', default:'', desc:'Vacío = servidor público' },
+      { key:'MapName',             label:'Mapa',                type:'select',   options:['TheIsland_WP','Aberration_WP','Extinction_WP','ScorchedEarth_WP','TheCenter_WP','Svartalfheim_WP','BobsMissions_WP'], default:'TheIsland_WP' },
+      { key:'ServerPVE',           label:'Modo PvE',            type:'select',   options:['false','true'], default:'false', desc:'true = sin daño entre jugadores' },
+      { key:'RCONEnabled',         label:'Activar RCON',        type:'select',   options:['false','true'], default:'false' },
+      { key:'RCONPort',            label:'Puerto RCON',         type:'number',   default:'32330' },
+      { key:'AdminLogging',        label:'Log de comandos admin', type:'select', options:['true','false'], default:'true', desc:'Registra todos los comandos admin en el chat' },
+    ]},
+    { id:'rates', title:'Tasas', icon:'fa-gauge-high', fields:[
+      { key:'XPMultiplier',                         label:'XP',                    type:'range', min:0.5, max:20,  step:0.5, default:'1', desc:'Velocidad de ganancia de experiencia de jugadores y dinos' },
+      { key:'TamingSpeedMultiplier',                label:'Velocidad de taming',   type:'range', min:0.5, max:30,  step:0.5, default:'1', desc:'Mayor = se doman más rápido' },
+      { key:'HarvestAmountMultiplier',              label:'Cantidad de cosecha',   type:'range', min:0.5, max:20,  step:0.5, default:'1', desc:'Cantidad de recursos por golpe' },
+      { key:'HarvestHealthMultiplier',              label:'Salud de recursos',     type:'range', min:0.1, max:10,  step:0.1, default:'1', desc:'Cuántos golpes aguanta un árbol/roca antes de agotarse' },
+      { key:'ResourcesRespawnPeriodMultiplier',     label:'Respawn de recursos',   type:'range', min:0.1, max:5,   step:0.1, default:'1', desc:'MENOR valor = reaparecen MÁS rápido' },
+      { key:'ResourceNoReplenishRadiusPlayers',     label:'Radio sin respawn (jugadores)', type:'range', min:0.1, max:5, step:0.1, default:'1' },
+      { key:'ResourceNoReplenishRadiusStructures',  label:'Radio sin respawn (estructuras)', type:'range', min:0.1, max:5, step:0.1, default:'1' },
+      { key:'PlayerCharacterFoodDrainMultiplier',   label:'Consumo de comida',     type:'range', min:0.1, max:5,   step:0.1, default:'1', desc:'Mayor = más hambre' },
+      { key:'PlayerCharacterWaterDrainMultiplier',  label:'Consumo de agua',       type:'range', min:0.1, max:5,   step:0.1, default:'1' },
+      { key:'PlayerCharacterStaminaDrainMultiplier',label:'Consumo de stamina',    type:'range', min:0.1, max:5,   step:0.1, default:'1' },
+      { key:'PlayerCharacterHealthRecoveryMultiplier',label:'Recuperación de vida', type:'range', min:0.1, max:5,  step:0.1, default:'1' },
+      { key:'DinoCharacterFoodDrainMultiplier',     label:'Comida de dinos',       type:'range', min:0.1, max:5,   step:0.1, default:'1' },
+      { key:'DinoCharacterStaminaDrainMultiplier',  label:'Stamina de dinos',      type:'range', min:0.1, max:5,   step:0.1, default:'1' },
+      { key:'DinoCharacterHealthRecoveryMultiplier',label:'Recuperación vida dinos', type:'range', min:0.1, max:5, step:0.1, default:'1' },
+    ]},
+    { id:'breeding', title:'Breeding', icon:'fa-egg', fields:[
+      { key:'MatingIntervalMultiplier',                    label:'Intervalo entre crías',        type:'range', min:0.01, max:2,   step:0.01, default:'1', desc:'MENOR = pueden criar con MÁS frecuencia' },
+      { key:'MatingSpeedMultiplier',                       label:'Velocidad de apareamiento',    type:'range', min:0.5,  max:10,  step:0.5,  default:'1' },
+      { key:'EggHatchSpeedMultiplier',                     label:'Velocidad de incubación',      type:'range', min:0.5,  max:100, step:0.5,  default:'1', desc:'Mayor = los huevos se incuban más rápido' },
+      { key:'BabyMatureSpeedMultiplier',                   label:'Velocidad de maduración',      type:'range', min:0.5,  max:100, step:0.5,  default:'1', desc:'Mayor = las crías crecen más rápido' },
+      { key:'BabyFoodConsumptionSpeedMultiplier',          label:'Consumo de comida de crías',   type:'range', min:0.1,  max:5,   step:0.1,  default:'1', desc:'MENOR = crías comen menos (más fácil de criar)' },
+      { key:'BabyCuddleIntervalMultiplier',                label:'Intervalo de mimos',           type:'range', min:0.01, max:5,   step:0.01, default:'1', desc:'MENOR = piden mimos con más frecuencia' },
+      { key:'BabyCuddleGracePeriodMultiplier',             label:'Gracia tras mimo',             type:'range', min:0.1,  max:5,   step:0.1,  default:'1' },
+      { key:'BabyCuddleLoseImprintQualitySpeedMultiplier', label:'Pérdida de imprinting',        type:'range', min:0.1,  max:5,   step:0.1,  default:'1', desc:'MENOR = el imprinting no se pierde tan rápido' },
+      { key:'BabyImprintingStatScaleMultiplier',           label:'Bonus de imprinting (stats)',  type:'range', min:0.1,  max:5,   step:0.1,  default:'1', desc:'Mayor = más bonus de stats con imprinting 100%' },
+    ]},
+    { id:'combat', title:'Combate', icon:'fa-shield-halved', fields:[
+      { key:'PlayerDamageMultiplier',         label:'Daño del jugador',          type:'range', min:0.5, max:10, step:0.5, default:'1' },
+      { key:'PlayerResistanceMultiplier',     label:'Resistencia del jugador',   type:'range', min:0.5, max:5,  step:0.5, default:'1', desc:'Mayor = recibe menos daño' },
+      { key:'DinoDamageMultiplier',           label:'Daño de dinos (salvajes)',  type:'range', min:0.5, max:10, step:0.5, default:'1' },
+      { key:'DinoResistanceMultiplier',       label:'Resistencia dinos salvajes',type:'range', min:0.5, max:5,  step:0.5, default:'1' },
+      { key:'TamedDinoDamageMultiplier',      label:'Daño de dinos domados',     type:'range', min:0.5, max:10, step:0.5, default:'1' },
+      { key:'TamedDinoResistanceMultiplier',  label:'Resistencia dinos domados', type:'range', min:0.5, max:5,  step:0.5, default:'1' },
+      { key:'StructureDamageMultiplier',      label:'Daño a estructuras',        type:'range', min:0.5, max:10, step:0.5, default:'1' },
+      { key:'StructureResistanceMultiplier',  label:'Resistencia de estructuras',type:'range', min:0.5, max:10, step:0.5, default:'1' },
+      { key:'DinoCountMultiplier',            label:'Cantidad de dinos salvajes', type:'range', min:0.5, max:5, step:0.5, default:'1', desc:'Multiplicador global de dinos en el mapa' },
+      { key:'MaxPersonalTamedDinos',          label:'Máx dinos por jugador',     type:'number', default:'40', desc:'Límite de dinos domados por tribu/jugador' },
+      { key:'MaxTamedDinos',                  label:'Máx dinos totales',         type:'number', default:'5000', desc:'Límite global de dinos domados en el servidor' },
+    ]},
+    { id:'stats', title:'Stats por Nivel', icon:'fa-chart-bar', fields:[
+      { key:'pls_health',   label:'❤ Vida por nivel (jugador)',     type:'range', min:0.5, max:10, step:0.5, default:'1', desc:'Puntos de vida ganados al subir de nivel' },
+      { key:'pls_stamina',  label:'⚡ Stamina por nivel',           type:'range', min:0.5, max:10, step:0.5, default:'1' },
+      { key:'pls_oxygen',   label:'🫧 Oxígeno por nivel',           type:'range', min:0.5, max:10, step:0.5, default:'1' },
+      { key:'pls_food',     label:'🍖 Comida por nivel',            type:'range', min:0.5, max:10, step:0.5, default:'1' },
+      { key:'pls_water',    label:'💧 Agua por nivel',              type:'range', min:0.5, max:10, step:0.5, default:'1' },
+      { key:'pls_weight',   label:'⚖ Peso por nivel',              type:'range', min:0.5, max:20, step:0.5, default:'1' },
+      { key:'pls_damage',   label:'⚔ Daño por nivel',              type:'range', min:0.5, max:10, step:0.5, default:'1' },
+      { key:'pls_speed',    label:'🏃 Velocidad por nivel',         type:'range', min:0.5, max:5,  step:0.5, default:'1', desc:'¡Cuidado! Muy alto puede romper el balance' },
+      { key:'pls_crafting', label:'🔨 Artesanía por nivel',         type:'range', min:0.5, max:10, step:0.5, default:'1' },
+      { key:'dls_health',   label:'❤ Vida por nivel (dino domado)',type:'range', min:0.5, max:10, step:0.5, default:'1' },
+      { key:'dls_stamina',  label:'⚡ Stamina por nivel (dino)',    type:'range', min:0.5, max:10, step:0.5, default:'1' },
+      { key:'dls_weight',   label:'⚖ Peso por nivel (dino)',       type:'range', min:0.5, max:20, step:0.5, default:'1' },
+      { key:'dls_damage',   label:'⚔ Daño por nivel (dino domado)',type:'range', min:0.5, max:10, step:0.5, default:'1' },
+    ]},
+    { id:'environment', title:'Entorno', icon:'fa-sun', fields:[
+      { key:'DayTimeSpeedScale',         label:'Velocidad del día',         type:'range', min:0.1, max:10, step:0.1, default:'1', desc:'Mayor = días más cortos' },
+      { key:'NightTimeSpeedScale',       label:'Velocidad de la noche',     type:'range', min:0.1, max:10, step:0.1, default:'1', desc:'Mayor = noches más cortas' },
+      { key:'OverrideOfficialDifficulty',label:'Dificultad oficial (nivel máx dino)', type:'number', default:'5.0', desc:'5 = dinos hasta lvl 150. 6 = hasta 180. 8 = hasta 240' },
+      { key:'DifficultyOffset',          label:'Offset de dificultad',      type:'range', min:0, max:1, step:0.05, default:'1.0' },
+      { key:'MaxNumberOfPlayersInTribe', label:'Máx jugadores por tribu',   type:'number', default:'10' },
+      { key:'MaxTribeAlliances',         label:'Máx alianzas de tribu',     type:'number', default:'10' },
+      { key:'ServerHardcore',            label:'Modo Hardcore',             type:'select', options:['false','true'], default:'false', desc:'Al morir se pierde el personaje permanentemente' },
+      { key:'AllowFlyerCarryPvE',        label:'Pterosaurios cargan dinos (PvE)', type:'select', options:['false','true'], default:'false' },
+      { key:'PreventDinoTaming',         label:'Desactivar taming',         type:'select', options:['false','true'], default:'false' },
+      { key:'AllowRaidDinoFeeding',      label:'Alimentar dinos de raid',   type:'select', options:['false','true'], default:'false' },
+      { key:'EnableCryoSicknessPVE',     label:'Enfermedad de criyo (PvE)', type:'select', options:['false','true'], default:'false' },
+      { key:'AllowTribeWarPvE',          label:'Guerras tribales (PvE)',     type:'select', options:['false','true'], default:'false' },
+      { key:'PreventTribeAlliances',     label:'Desactivar alianzas',       type:'select', options:['false','true'], default:'false' },
+    ]},
+    { id:'cluster', title:'Cluster', icon:'fa-network-wired', fields:[
+      { key:'__cluster_enabled__', label:'Activar Cluster', type:'select', options:['false','true'], default:'false', desc:'Activa la transferencia de personajes, dinos e ítems entre servidores del cluster' },
+      { key:'__cluster_id__',      label:'ID del Cluster',  type:'text',   default:'MiCluster', desc:'MISMO ID en todos los servidores del cluster (sin espacios)' },
+      { key:'__instance_name__',   label:'Nombre de instancia', type:'text', default:'', desc:'Identificador único de este servidor para separar los saves. Ej: TheIsland, Aberration, Extinction' },
+      { key:'noTributeDownloads',           label:'Bloquear todas las descargas', type:'select', options:['false','true'], default:'false' },
+      { key:'PreventDownloadSurvivors',     label:'Bloquear descarga de personajes', type:'select', options:['false','true'], default:'false' },
+      { key:'PreventDownloadDinos',         label:'Bloquear descarga de dinos',      type:'select', options:['false','true'], default:'false' },
+      { key:'PreventDownloadItems',         label:'Bloquear descarga de ítems',      type:'select', options:['false','true'], default:'false' },
+      { key:'PreventUploadSurvivors',       label:'Bloquear subida de personajes',   type:'select', options:['false','true'], default:'false' },
+      { key:'PreventUploadDinos',           label:'Bloquear subida de dinos',        type:'select', options:['false','true'], default:'false' },
+      { key:'PreventUploadItems',           label:'Bloquear subida de ítems',        type:'select', options:['false','true'], default:'false' },
+      { key:'CrossARKAllowForeignDinoDownloads', label:'Permitir dinos de otros ARKs', type:'select', options:['false','true'], default:'false', desc:'Permite descargar dinos de ARK Survival Evolved' },
+    ]},
+    { id:'mods', title:'Mods', icon:'fa-puzzle-piece', type:'mods',
+      desc:'IDs de mods de Steam Workshop, uno por línea. Solo el número. Los mods se descargan automáticamente al iniciar. Buscá en:',
+      workshopUrl: 'https://steamcommunity.com/app/2399830/workshop/' },
+  ]},
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // VALHEIM
+  // ══════════════════════════════════════════════════════════════════════════
+  valheim: { sections: [
+    { id:'general', title:'General', icon:'fa-server', fields:[
+      { key:'name',     label:'Nombre del servidor', type:'text',     default:'Mi Valheim Server', desc:'Nombre visible en la lista de servidores' },
+      { key:'password', label:'Contraseña',          type:'password', default:'valhalla', desc:'Mínimo 5 caracteres, no puede ser igual al nombre del server' },
+      { key:'port',     label:'Puerto',              type:'number',   default:'2456', desc:'Se usan el puerto y el puerto+1 (UDP)' },
+      { key:'public',   label:'Servidor público',    type:'select',   options:['1','0'], default:'1', desc:'1 = aparece en la lista pública de Valheim' },
+      { key:'world',    label:'Nombre del mundo',    type:'text',     default:'Dedicated', desc:'Nombre del archivo de mundo guardado en disco' },
+    ]},
+    { id:'mods', title:'Mods (BepInEx)', icon:'fa-puzzle-piece', type:'mods',
+      desc:'Valheim usa BepInEx para mods. Instalá BepInEx en la carpeta del servidor, luego copiá los mods en BepInEx/plugins/. Buscá mods en:',
+      workshopUrl: 'https://www.nexusmods.com/valheim' },
+  ]},
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // CONAN EXILES
+  // ══════════════════════════════════════════════════════════════════════════
+  conan: { sections: [
+    { id:'general', title:'General', icon:'fa-server', fields:[
+      { key:'ServerName',           label:'Nombre del servidor',     type:'text',     default:'Mi Conan Server' },
+      { key:'Port',                 label:'Puerto',                  type:'number',   default:'7777' },
+      { key:'MaxPlayers',           label:'Máx jugadores',           type:'number',   default:'40' },
+      { key:'ServerPassword',       label:'Password de entrada',     type:'password', default:'', desc:'Vacío = servidor público' },
+      { key:'AdminPassword',        label:'Password admin',          type:'password', default:'admin123' },
+      { key:'IsBattleEyeEnabled',   label:'BattleEye (anti-cheat)', type:'select',   options:['true','false'], default:'true' },
+      { key:'MaxNudity',            label:'Nivel de desnudez',       type:'select',   options:['0','1','2'], default:'2', desc:'0=Ninguno, 1=Parcial, 2=Total' },
+      { key:'PVPEnabled',           label:'PvP activado',            type:'select',   options:['true','false'], default:'true' },
+      { key:'DropOnDeath',          label:'Al morir, perder',        type:'select',   options:['0','1','2','3'], default:'0', desc:'0=Nada, 1=Todo, 2=Solo mochila, 3=Solo equipado' },
+      { key:'LogoutCharacterPersistenceTime', label:'Cuerpo al desconectar (seg)', type:'number', default:'0', desc:'0 = desaparece al instante' },
+    ]},
+    { id:'rates', title:'Tasas', icon:'fa-gauge-high', fields:[
+      { key:'XPRateMultiplier',              label:'XP',                        type:'range', min:0.5, max:10, step:0.5, default:'1' },
+      { key:'HarvestAmountMultiplier',       label:'Cantidad de cosecha',       type:'range', min:0.5, max:10, step:0.5, default:'1' },
+      { key:'ResourceRespawnSpeedMultiplier',label:'Respawn de recursos',       type:'range', min:0.1, max:10, step:0.1, default:'1', desc:'Mayor = reaparecen MÁS rápido' },
+      { key:'ItemSpoilRateScale',            label:'Putrefacción de alimentos', type:'range', min:0,   max:5,  step:0.1, default:'1', desc:'0 = los alimentos no se pudren nunca' },
+      { key:'ItemConvertionMultiplier',      label:'Conversión de ítems',       type:'range', min:0.1, max:5,  step:0.1, default:'1' },
+      { key:'CraftingCostMultiplier',        label:'Costo de crafteo',          type:'range', min:0.1, max:5,  step:0.1, default:'1', desc:'MENOR = más barato craftear' },
+      { key:'DurabilityMultiplier',          label:'Durabilidad de herramientas',type:'range', min:0.1, max:10, step:0.5, default:'1', desc:'Mayor = duran más' },
+    ]},
+    { id:'survival', title:'Supervivencia', icon:'fa-heart', fields:[
+      { key:'PlayerActiveThirstMult',      label:'Sed (en movimiento)',  type:'range', min:0.1, max:5, step:0.1, default:'1' },
+      { key:'PlayerIdleThirstMult',        label:'Sed (parado)',         type:'range', min:0.1, max:5, step:0.1, default:'1' },
+      { key:'PlayerActiveHungerMult',      label:'Hambre (en movimiento)',type:'range', min:0.1, max:5, step:0.1, default:'1' },
+      { key:'PlayerIdleHungerMult',        label:'Hambre (parado)',      type:'range', min:0.1, max:5, step:0.1, default:'1' },
+      { key:'StaminaCostMultiplier',       label:'Costo de stamina',     type:'range', min:0.1, max:5, step:0.1, default:'1' },
+      { key:'PlayerHealthMultiplier',      label:'Vida del jugador',     type:'range', min:0.5, max:10, step:0.5, default:'1' },
+      { key:'UnconsciousnessDurationMultiplier', label:'Duración del desmayo', type:'range', min:0.1, max:5, step:0.1, default:'1' },
+    ]},
+    { id:'combat', title:'Combate', icon:'fa-shield-halved', fields:[
+      { key:'PlayerDamageMultiplier',   label:'Daño del jugador',      type:'range', min:0.1, max:10, step:0.5, default:'1' },
+      { key:'NPCDamageMultiplier',      label:'Daño de NPCs/enemies',  type:'range', min:0.1, max:10, step:0.5, default:'1' },
+      { key:'NPCHealthMultiplier',      label:'Vida de NPCs/enemies',  type:'range', min:0.1, max:10, step:0.5, default:'1' },
+      { key:'PlayerKnockbackMultiplier',label:'Knockback al jugador',  type:'range', min:0.1, max:5,  step:0.1, default:'1' },
+      { key:'NPCKnockbackMultiplier',   label:'Knockback de NPCs',     type:'range', min:0.1, max:5,  step:0.1, default:'1' },
+      { key:'AwarenessRangeMultiplier', label:'Rango de detección de NPCs', type:'range', min:0.1, max:5, step:0.1, default:'1', desc:'Mayor = los NPCs te detectan desde más lejos' },
+      { key:'NetherDamageMultiplier',   label:'Daño del Abismo',       type:'range', min:0.1, max:5,  step:0.1, default:'1' },
+    ]},
+    { id:'building', title:'Construcción', icon:'fa-hammer', fields:[
+      { key:'BuildingDamageMultiplier', label:'Daño a edificios',         type:'range', min:0, max:10, step:0.5, default:'1' },
+      { key:'MaxBuildingBuildingHeight',label:'Altura máx de edificios',  type:'number', default:'128', desc:'Cantidad máx de piezas de altura' },
+      { key:'ClanMaxSize',             label:'Tamaño máx de clan',        type:'number', default:'10' },
+      { key:'ContainerPreventLooting', label:'Saqueo de contenedores',    type:'select', options:['0','1','2'], default:'0', desc:'0=Libre, 1=Solo clan, 2=Solo dueño' },
+      { key:'ThrallWakeupTime',        label:'Tiempo de despertar esclavo (seg)', type:'number', default:'420', desc:'Tiempo que tarda en levantarse un esclavo desmayado' },
+      { key:'ThrallConversionMultiplier',label:'Velocidad de conversión de esclavos', type:'range', min:0.1, max:10, step:0.5, default:'1', desc:'Mayor = se convierten más rápido' },
+      { key:'PetConversionMultiplier', label:'Velocidad de conversión de mascotas', type:'range', min:0.1, max:10, step:0.5, default:'1' },
+    ]},
+    { id:'purge', title:'La Purga', icon:'fa-skull', fields:[
+      { key:'EnablePurge',                  label:'Activar La Purga',              type:'select', options:['true','false'], default:'true', desc:'La Purga ataca las construcciones de los jugadores' },
+      { key:'PurgeLevel',                   label:'Nivel máximo de Purga',         type:'range', min:1, max:6, step:1, default:'6', desc:'1=débil, 6=máximo (jefes épicos)' },
+      { key:'PurgeSuspectThreshold',        label:'Actividad mínima para activar', type:'number', default:'42000', desc:'Puntos de actividad necesarios para activar la Purga' },
+      { key:'PurgeTriggerDelay',            label:'Retraso de activación (min)',   type:'number', default:'5' },
+      { key:'PurgePreparationTime',         label:'Tiempo de preparación (min)',   type:'number', default:'10', desc:'Tiempo que tienen los jugadores para prepararse' },
+      { key:'PurgeDuration',                label:'Duración de la Purga (min)',    type:'number', default:'30' },
+      { key:'PurgeMaxStoredActivations',    label:'Purgas almacenadas',            type:'number', default:'1', desc:'Cuántas Purgas puede tener "en cola" un clan' },
+      { key:'MinimumOnlinePlayersForPurge', label:'Min jugadores online',          type:'number', default:'1', desc:'La Purga solo ataca si hay al menos X jugadores online' },
+    ]},
+    { id:'mods', title:'Mods', icon:'fa-puzzle-piece', type:'mods',
+      desc:'IDs de mods de Steam Workshop, uno por línea. Se descargan automáticamente al iniciar el servidor. Buscá en:',
+      workshopUrl: 'https://steamcommunity.com/app/440900/workshop/' },
+  ]},
+};
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+async function init() {
+  // ── Verificar licencia primero ──────────────────────────────────────────────
+  await checkLicense();
+
+  GAMES   = await api.getGames();
+  servers = await api.getServers();
+
+  buildGameCards();
+  renderSidebar();
+
+  // Start events
+  api.on('install-log',  onInstallLog);
+  api.on('server-stopped', onServerStopped);
+
+  if (servers.length === 0) {
+    showView('home');
+  } else {
+    showServer(servers[0]);
+  }
+}
+
+// ─── LICENSE ──────────────────────────────────────────────────────────────────
+let licenseInfo = null;
+
+async function checkLicense() {
+  licenseInfo = await api.getLicenseInfo();
+
+  const badge   = document.getElementById('licenseBadge');
+  const overlay = document.getElementById('licenseOverlay');
+
+  if (licenseInfo.licensed) {
+    // Licencia activa
+    badge.className      = 'active';
+    badge.textContent    = '✓ Licencia activa';
+    badge.style.display  = 'inline-block';
+    overlay.classList.add('hidden');
+
+  } else if (!licenseInfo.trialExpired) {
+    // En trial
+    const d = licenseInfo.daysLeft;
+    badge.className     = d <= 5 ? 'trial urgent' : 'trial';
+    badge.textContent   = `Trial: ${d} día${d !== 1 ? 's' : ''} restante${d !== 1 ? 's' : ''}`;
+    badge.style.display = 'inline-block';
+    overlay.classList.add('hidden');
+
+  } else {
+    // Trial expirado — mostrar paywall
+    badge.style.display = 'none';
+    document.getElementById('licMachineId').textContent = licenseInfo.displayId;
+    overlay.classList.remove('hidden');
+  }
+}
+
+async function activateLicenseUI() {
+  const input  = document.getElementById('licKeyInput');
+  const errDiv = document.getElementById('licError');
+  const key    = input.value.trim();
+
+  if (!key || !key.startsWith('INFERNO-')) {
+    input.classList.add('error');
+    errDiv.textContent = 'La clave debe comenzar con INFERNO-';
+    return;
+  }
+
+  const btn = document.querySelector('.lic-btn-primary:last-of-type');
+  btn.disabled  = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
+
+  const result = await api.activateLicense(key);
+  btn.disabled  = false;
+  btn.innerHTML = '<i class="fas fa-key"></i> Activar licencia';
+
+  if (result.success) {
+    document.getElementById('licenseOverlay').classList.add('hidden');
+    await checkLicense();
+    showToast('✓ Licencia activada correctamente', 'success');
+  } else {
+    input.classList.add('error');
+    errDiv.textContent = result.error || 'Clave inválida';
+  }
+}
+
+// ─── GAME CARDS ──────────────────────────────────────────────────────────────
+function buildGameCards() {
+  const grid = document.getElementById('gamesGrid');
+  grid.innerHTML = Object.entries(GAMES).map(([id, g]) => `
+    <div class="game-card" onclick="openInstallModal('${id}')" style="--gc:${g.color}">
+      <div class="ghead" style="background:linear-gradient(135deg,${g.color}18,${g.color}05)">
+        <span style="filter:drop-shadow(0 0 12px ${g.color}66)">${g.icon}</span>
+      </div>
+      <div style="height:2px;background:${g.color};opacity:0.7"></div>
+      <div class="gbody">
+        <div class="gname">${g.name}</div>
+        <div class="gram"><i class="fas fa-memory" style="font-size:10px;margin-right:4px"></i>Mín ${g.minRam} GB RAM · Puerto ${g.port}</div>
+        <button class="gaction" style="background:${g.color}22;color:${g.color};border:1px solid ${g.color}44">
+          Crear servidor →
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ─── SIDEBAR ─────────────────────────────────────────────────────────────────
+function renderServerChip(s) {
+  const g = GAMES[s.gameId] || {};
+  const active = currentServer?.id === s.id;
+  const instanceLabel = s.config?.['__instance_name__']
+    ? `<span style="font-size:10px;color:var(--cyan);margin-left:4px;">[${s.config['__instance_name__']}]</span>` : '';
+  return `<div class="server-chip ${active ? 'active' : ''}" onclick="showServer('${s.id}')">
+    <div class="dot dot-offline" id="dot-${s.id}"></div>
+    <div class="info">
+      <div class="sname">${s.name}${instanceLabel}</div>
+      <div class="sgame">${g.name || s.gameId}</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:4px;flex-shrink:0;">
+      <span style="font-size:16px">${g.icon || '🎮'}</span>
+      <button class="chip-del" onclick="deleteServer('${s.id}',event)" title="Eliminar servidor">
+        <i class="fas fa-trash-can"></i>
+      </button>
+    </div>
+  </div>`;
+}
+
+function renderSidebar() {
+  const list = document.getElementById('serverList');
+  if (servers.length === 0) { list.innerHTML = ''; return; }
+
+  // Separate cluster servers from standalone
+  const clusters = {};
+  const standalone = [];
+  servers.forEach(s => {
+    const cid = s.gameId === 'ark' && s.config?.['__cluster_enabled__'] === 'true'
+      ? (s.config?.['__cluster_id__'] || '').trim() : '';
+    if (cid) {
+      if (!clusters[cid]) clusters[cid] = [];
+      clusters[cid].push(s);
+    } else {
+      standalone.push(s);
+    }
+  });
+
+  let html = '';
+
+  // Render clusters
+  Object.entries(clusters).forEach(([cid, clusterServers]) => {
+    html += `<div class="cluster-group">
+      <div class="cluster-header">
+        <i class="fas fa-network-wired"></i>
+        <span>${cid}</span>
+        <span class="cluster-count">${clusterServers.length} servidor${clusterServers.length !== 1 ? 'es' : ''}</span>
+      </div>
+      ${clusterServers.map(renderServerChip).join('')}
+    </div>`;
+  });
+
+  // Render standalone
+  html += standalone.map(renderServerChip).join('');
+  list.innerHTML = html;
+}
+
+// ─── MODAL ───────────────────────────────────────────────────────────────────
+function openInstallModal(gameId) {
+  installingGame = gameId;
+  const g = GAMES[gameId];
+  document.getElementById('modalTitle').textContent = `Instalar ${g.name}`;
+  document.getElementById('modalName').value  = `Mi server de ${g.name}`;
+  document.getElementById('modalRam').value   = g.minRam;
+  document.getElementById('modalPass').value  = '';
+  document.getElementById('modalConfirm').onclick = () => startInstall(gameId);
+  document.getElementById('modalOverlay').classList.add('show');
+  document.getElementById('modalName').focus();
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('show');
+}
+
+document.getElementById('modalOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+});
+
+// ─── INSTALL ─────────────────────────────────────────────────────────────────
+async function startInstall(gameId) {
+  closeModal();
+  const g   = GAMES[gameId];
+  const name = document.getElementById('modalName').value || `Mi server de ${g.name}`;
+  const ram  = parseInt(document.getElementById('modalRam').value) || g.minRam;
+  const pass = document.getElementById('modalPass').value;
+
+  // Setear ANTES de instalar para que "Abrir servidor" funcione cuando llega done:true
+  installingGame = { gameId, name, ram, pass };
+
+  // Check if already installed
+  const installed = await api.checkGame(gameId);
+  if (installed) {
+    const newSvr = createServerObj(gameId, name, ram, pass);
+    await saveAndOpenServer(newSvr);
+    return;
+  }
+
+  // Show install view
+  document.getElementById('installIcon').textContent = g.icon;
+  document.getElementById('installTitle').textContent = `Instalando ${g.name}`;
+  document.getElementById('installSub').textContent   = gameId === 'minecraft'
+    ? 'Descargando ~50 MB. Listo en segundos.'
+    : `Descargando ${gameId === 'ark' ? '~30 GB' : gameId === 'conan' ? '~35 GB' : '~3 GB'}. Puede tardar varios minutos.`;
+  document.getElementById('progressBar').style.width = '0%';
+  document.getElementById('progressBar').style.background = g.color;
+  document.getElementById('progressText').textContent = 'Iniciando...';
+  document.getElementById('installLog').innerHTML = '';
+  document.getElementById('openServerBtn').style.display = 'none';
+  document.getElementById('cancelInstall').style.display = 'flex';
+  showView('install');
+
+  // Check / install SteamCMD first
+  if (g.useSteam) {
+    const hasSteam = await api.checkSteamCmd();
+    if (!hasSteam) {
+      appendLog('info', 'Instalando SteamCMD (requerido para este juego)...');
+      const r = await api.installSteamCmd();
+      if (!r.success) { appendLog('error', 'Error al instalar SteamCMD: ' + r.error); return; }
+    }
+    await api.installGame(gameId);
+  } else {
+    // Minecraft: check java, auto-install if missing
+    const hasJava = await api.checkJava();
+    if (!hasJava) {
+      appendLog('warn', '☕ Java no encontrado. Descargando Java 21 automáticamente (~45 MB)...');
+      setProgress(5, 'Descargando Java 21...');
+      const jr = await api.installJava();
+      if (!jr.success) {
+        appendLog('error', '✗ No se pudo instalar Java: ' + (jr.error || 'error desconocido'));
+        setProgress(0, 'Error');
+        return;
+      }
+    }
+    await api.installMinecraft();
+  }
+}
+
+function onInstallLog(data) {
+  if (data.text) appendLog(data.error ? 'error' : data.warn ? 'warn' : data.done ? 'success' : 'info', data.text);
+  if (data.pct !== null && data.pct !== undefined) setProgress(data.pct, data.text);
+  if (data.done) {
+    document.getElementById('openServerBtn').style.display = 'flex';
+    document.getElementById('cancelInstall').style.display = 'none';
+    toast('success', '¡Instalación completada!');
+  }
+}
+
+async function openInstalledServer() {
+  if (!installingGame || typeof installingGame !== 'object') return;
+  const { gameId, name, ram, pass } = installingGame;
+  const svr = createServerObj(gameId, name, ram, pass);
+  await saveAndOpenServer(svr);
+}
+
+function createServerObj(gameId, name, ram, pass) {
+  const g = GAMES[gameId];
+  return {
+    id:       Date.now().toString(),
+    gameId,
+    name,
+    config: {
+      name, ram, password: pass,
+      maxPlayers: gameId === 'ark' || gameId === 'conan' ? 40 : 20,
+      adminPassword: 'admin123',
+    },
+    port: g?.port || 25565,
+  };
+}
+
+async function saveAndOpenServer(svr) {
+  servers.push(svr);
+  await api.saveServer(svr);
+  renderSidebar();
+  showServer(svr.id);
+}
+
+function appendLog(type, text) {
+  const box = document.getElementById('installLog');
+  const div = document.createElement('div');
+  div.className = 'log-' + type;
+  div.textContent = text;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+function setProgress(pct, text) {
+  document.getElementById('progressBar').style.width = pct + '%';
+  if (text) document.getElementById('progressText').textContent = text.slice(0, 80);
+}
+
+// ─── SERVER VIEW ─────────────────────────────────────────────────────────────
+function showServer(idOrObj) {
+  const svr = typeof idOrObj === 'string'
+    ? servers.find(s => s.id === idOrObj)
+    : servers.find(s => s.id === idOrObj.id) || idOrObj;
+  if (!svr) return;
+
+  currentServer = svr;
+  const g = GAMES[svr.gameId] || {};
+
+  // Update sidebar active
+  renderSidebar();
+  setActiveNav(null);
+
+  // Header
+  const icon = document.getElementById('svrIcon');
+  icon.style.background = (g.color || '#333') + '22';
+  icon.textContent = g.icon || '🎮';
+  document.getElementById('svrName').textContent = svr.name;
+  document.getElementById('svrGame').textContent = g.name || svr.gameId;
+  api.getLocalIp().then(ip => {
+    document.getElementById('svrIP').textContent = `${ip}:${svr.port || g.port}`;
+  });
+
+  // Stats
+  document.getElementById('statPort').textContent  = svr.port || g.port || '—';
+  document.getElementById('statRam').textContent   = svr.config?.ram || g.minRam || '—';
+
+  // Clear console
+  document.getElementById('console').innerHTML = '';
+  addConsoleLine('info', `${g.icon} ${g.name || svr.gameId} — ${svr.name}`);
+  addConsoleLine('info', 'Panel listo. Hacé clic en "Iniciar" para arrancar el servidor.');
+
+  // Re-attach log listener
+  api.off('server-log-' + svr.id);
+  api.on('server-log-' + svr.id, d => addConsoleLine(d.type || 'info', d.text));
+
+  // Config fields
+  buildConfigFields(svr);
+
+  // Status
+  updateServerStatus(false);
+
+  showView('server');
+
+  // Check if actually running
+  api.getStatus(svr.id).then(s => {
+    if (s.running) updateServerStatus(true);
+  });
+}
+
+function buildConfigFields(svr) {
+  const cfg   = GAME_CONFIGS[svr.gameId];
+  const config = svr.config || {};
+  if (!cfg) { document.getElementById('configFields').innerHTML = '<p style="color:var(--dim);font-size:13px;">Sin configuración disponible.</p>'; return; }
+
+  const { sections } = cfg;
+
+  // Subtabs
+  const tabsHtml = `<div class="cfg-sectabs" id="cfgTabs">` +
+    sections.map((s,i) => `<button class="cfg-sectab ${i===0?'active':''}" onclick="switchCfgTab('${s.id}')"><i class="fas ${s.icon}"></i>${s.title}</button>`).join('') +
+  `</div>`;
+
+  // Sections
+  const sectionsHtml = sections.map((s,i) => {
+    const isFirst = i === 0;
+    if (s.type === 'mods') {
+      const modsVal = config['__mods__'] || '';
+      return `<div class="cfg-section ${isFirst?'active':''}" id="cfg-sec-${s.id}">
+        <div class="mods-panel">
+          <p class="mods-desc">${s.desc}${s.workshopUrl ? ` <span class="mods-link" onclick="api.openUrl('${s.workshopUrl}')">Buscar ${s.title} →</span>` : ''}</p>
+          <textarea class="config-input" data-key="__mods__" placeholder="Ej:\n731604991\n889745138\n1404697612" style="min-height:140px;font-size:12px;">${modsVal}</textarea>
+        </div>
+      </div>`;
+    }
+    const fieldsHtml = (s.fields || []).map(f => {
+      const val = config[f.key] !== undefined ? config[f.key] : f.default;
+      let inputHtml;
+      if (f.type === 'select') {
+        inputHtml = `<select class="config-input" data-key="${f.key}">
+          ${f.options.map(o => `<option ${o == val ? 'selected' : ''} style="background:var(--card)">${o}</option>`).join('')}
+        </select>`;
+      } else if (f.type === 'range') {
+        const v = val || f.default;
+        inputHtml = `<div class="range-wrap">
+          <input type="range" min="${f.min}" max="${f.max}" step="${f.step}" value="${v}" data-key="${f.key}"
+            oninput="this.nextElementSibling.textContent=parseFloat(this.value).toFixed(this.step<1?1:0)+'x'">
+          <span class="range-val">${parseFloat(v).toFixed(f.step<1?1:0)}x</span>
+        </div>`;
+      } else {
+        const t = f.type === 'password' ? 'password' : f.type === 'number' ? 'number' : 'text';
+        inputHtml = `<input type="${t}" class="config-input" data-key="${f.key}" value="${val ?? ''}">`;
+      }
+      return `<div class="config-row">
+        <div class="config-lbl">
+          <div class="lbl-main">${f.label}</div>
+          ${f.desc ? `<div class="lbl-desc">${f.desc}</div>` : ''}
+        </div>
+        <div class="config-right">${inputHtml}</div>
+      </div>`;
+    }).join('');
+    return `<div class="cfg-section ${isFirst?'active':''}" id="cfg-sec-${s.id}">
+      <div class="config-panel">${fieldsHtml}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('configFields').innerHTML = tabsHtml + sectionsHtml;
+
+  // Fix range labels: after DOM insertion, read the browser-snapped value
+  // (browser snaps the input value to nearest valid step, so the label must match)
+  document.querySelectorAll('#configFields input[type="range"]').forEach(input => {
+    const snapped = parseFloat(input.value);
+    const step    = parseFloat(input.step) || 1;
+    input.nextElementSibling.textContent = snapped.toFixed(step < 1 ? 1 : 0) + 'x';
+  });
+}
+
+function switchCfgTab(id) {
+  document.querySelectorAll('.cfg-sectab').forEach(b => b.classList.toggle('active', b.onclick.toString().includes(`'${id}'`)));
+  document.querySelectorAll('.cfg-section').forEach(s => s.classList.toggle('active', s.id === `cfg-sec-${id}`));
+}
+
+async function openPorts() {
+  if (!currentServer) return;
+  const game = GAMES[currentServer.gameId] || {};
+  const port  = currentServer.port || game.port || '—';
+  const proto = currentServer.gameId === 'valheim' ? 'UDP' : 'TCP';
+
+  // Fill modal fields
+  const ip = await api.getLocalIp();
+  document.getElementById('pgLocalIp').textContent   = ip;
+  document.getElementById('pgPort').textContent      = port;
+  document.getElementById('pgProto').textContent     = proto;
+  document.getElementById('pgFillIp').textContent    = ip;
+  document.getElementById('pgFillPort1').textContent = port;
+  document.getElementById('pgFillPort2').textContent = port;
+  document.getElementById('pgFillProto').textContent = proto;
+  document.getElementById('pgFirewallStatus').textContent = 'Pendiente';
+  document.getElementById('pgFirewallStatus').style.color = 'var(--muted)';
+  document.getElementById('pgFirewallBtn').disabled  = false;
+  document.getElementById('pgFirewallBtn').innerHTML = '<i class="fas fa-wand-magic-sparkles" style="margin-right:6px;"></i>Aplicar automáticamente';
+
+  // Detect gateway
+  document.getElementById('pgGateway').textContent = 'detectando...';
+  api.getGateway().then(gw => {
+    document.getElementById('pgGateway').textContent = gw || 'No detectado (revisá en cmd: ipconfig)';
+  });
+
+  document.getElementById('portsOverlay').style.display = 'flex';
+}
+
+function closePortsModal() {
+  document.getElementById('portsOverlay').style.display = 'none';
+}
+
+async function applyFirewall() {
+  if (!currentServer) return;
+  const btn = document.getElementById('pgFirewallBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right:6px;"></i>Aplicando...';
+  const r = await api.openPorts({ gameId: currentServer.gameId });
+  const status = document.getElementById('pgFirewallStatus');
+  if (r.success) {
+    btn.innerHTML = '<i class="fas fa-check" style="margin-right:6px;"></i>¡Aplicado!';
+    btn.style.background = 'var(--green)';
+    status.textContent = '✓ Listo';
+    status.style.color = 'var(--green)';
+  } else {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-wand-magic-sparkles" style="margin-right:6px;"></i>Reintentar';
+    status.textContent = 'Error — intentá manualmente';
+    status.style.color = 'var(--red)';
+  }
+}
+
+function openRouter() {
+  const gw = document.getElementById('pgGateway').textContent;
+  if (gw && gw !== 'detectando...' && gw !== 'No detectado (revisá en cmd: ipconfig)') {
+    api.openUrl('http://' + gw);
+  }
+}
+
+document.getElementById('portsOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('portsOverlay')) closePortsModal();
+});
+
+async function saveConfig() {
+  if (!currentServer) return;
+  document.querySelectorAll('#configFields [data-key]').forEach(el => {
+    currentServer.config[el.dataset.key] = el.value;
+  });
+  await api.saveServer(currentServer);
+  await api.writeGameConfig({ gameId: currentServer.gameId, config: currentServer.config });
+  toast('success', 'Configuración guardada.');
+  const running = await api.getStatus(currentServer.id).then(s => s.running);
+  if (running) serverAction('restart');
+}
+
+// ─── SERVER ACTIONS ──────────────────────────────────────────────────────────
+async function serverAction(action) {
+  if (!currentServer) return;
+
+  if (action === 'start') {
+    const installed = await api.checkGame(currentServer.gameId);
+    if (!installed) { toast('warn', 'El juego no está instalado.'); return; }
+    setServerStatus('starting');
+    addConsoleLine('warn', 'Iniciando servidor...');
+    const r = await api.startServer({
+      serverId: currentServer.id,
+      gameId:   currentServer.gameId,
+      config:   currentServer.config,
+    });
+    if (r.success) {
+      setServerStatus('online');
+      uptimeStart = Date.now();
+      startUptimeCounter();
+      toast('success', '¡Servidor iniciado!');
+    } else {
+      setServerStatus('offline');
+      addConsoleLine('error', '✗ ' + (r.error || 'Error al iniciar'));
+      toast('error', 'No se pudo iniciar: ' + r.error);
+    }
+  } else if (action === 'stop') {
+    await api.stopServer(currentServer.id);
+    setServerStatus('offline');
+    stopUptimeCounter();
+    addConsoleLine('warn', 'Servidor detenido.');
+    toast('warn', 'Servidor detenido.');
+  } else if (action === 'restart') {
+    await api.stopServer(currentServer.id);
+    setServerStatus('starting');
+    addConsoleLine('warn', 'Reiniciando...');
+    setTimeout(() => serverAction('start'), 1500);
+  }
+}
+
+function onServerStopped(serverId) {
+  if (currentServer?.id === serverId) {
+    setServerStatus('offline');
+    stopUptimeCounter();
+  }
+  const dot = document.getElementById('dot-' + serverId);
+  if (dot) { dot.className = 'dot dot-offline'; }
+}
+
+function setServerStatus(status) {
+  updateServerStatus(status === 'online', status);
+  const dot = document.getElementById('dot-' + currentServer?.id);
+  if (dot) dot.className = `dot dot-${status}`;
+}
+
+function updateServerStatus(online, status) {
+  const s = status || (online ? 'online' : 'offline');
+  const map = {
+    online:   `<span class="status-badge status-online"><i class="fas fa-circle" style="font-size:7px"></i> Online</span>`,
+    offline:  `<span class="status-badge status-offline"><i class="fas fa-circle" style="font-size:7px"></i> Offline</span>`,
+    starting: `<span class="status-badge status-starting"><i class="fas fa-circle" style="font-size:7px;animation:blink 1s infinite;display:inline-block"></i> Iniciando...</span>`,
+  };
+  document.getElementById('svrStatusBadge').innerHTML = map[s] || map.offline;
+  document.getElementById('statStatus').textContent   = {online:'🟢',offline:'🔴',starting:'🟡'}[s] || '🔴';
+  document.getElementById('btnStart').disabled   = online || s === 'starting';
+  document.getElementById('btnStop').disabled    = !online && s !== 'starting';
+  document.getElementById('btnRestart').disabled = !online && s !== 'starting';
+}
+
+// ─── CONSOLE ─────────────────────────────────────────────────────────────────
+function addConsoleLine(type, text) {
+  if (!text?.trim()) return;
+  const con  = document.getElementById('console');
+  const time = new Date().toTimeString().slice(0,8);
+  const div  = document.createElement('div');
+  div.className = 'con-line';
+  div.innerHTML = `<span class="con-time">${time}</span><span class="con-${type}">${escHtml(text)}</span>`;
+  con.appendChild(div);
+  con.scrollTop = con.scrollHeight;
+  // Keep max 200 lines
+  while (con.children.length > 200) con.removeChild(con.firstChild);
+}
+
+function handleCmd(e) {
+  if (e.key !== 'Enter') return;
+  const input = document.getElementById('cmdInput');
+  const cmd   = input.value.trim();
+  if (!cmd) return;
+  input.value = '';
+  addConsoleLine('warn', '> ' + cmd);
+  if (!currentServer) return;
+  api.getStatus(currentServer.id).then(s => {
+    if (!s.running) { addConsoleLine('error', 'El servidor no está corriendo.'); return; }
+    api.sendCommand({ serverId: currentServer.id, cmd });
+  });
+}
+
+// ─── UPTIME ──────────────────────────────────────────────────────────────────
+function startUptimeCounter() {
+  stopUptimeCounter();
+  uptimeInterval = setInterval(() => {
+    if (!uptimeStart) return;
+    const secs = Math.floor((Date.now() - uptimeStart) / 1000);
+    const h = Math.floor(secs / 3600), m = Math.floor((secs%3600)/60), s = secs%60;
+    document.getElementById('statUptime').textContent = `${h}h ${m}m ${s}s`;
+  }, 1000);
+}
+
+function stopUptimeCounter() {
+  clearInterval(uptimeInterval);
+  document.getElementById('statUptime').textContent = '—';
+}
+
+// ─── VIEW / TAB HELPERS ──────────────────────────────────────────────────────
+function showView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view' + name.charAt(0).toUpperCase() + name.slice(1))?.classList.add('active');
+  if (name === 'home' || name === 'settings') setActiveNav(name);
+  if (name === 'settings') loadSettings();
+}
+
+// ─── SETTINGS ────────────────────────────────────────────────────────────────
+async function loadSettings() {
+  // Paths
+  try {
+    const paths = await api.getDataPaths();
+    document.getElementById('settingsDataDir').textContent    = paths.dataDir;
+    document.getElementById('settingsServersDir').textContent = paths.serversDir;
+  } catch {}
+
+  // Java status
+  try {
+    const hasJava = await api.checkJava();
+    const javaEl  = document.getElementById('settingsJavaStatus');
+    const javaBtn = document.getElementById('settingsJavaBtn');
+    if (hasJava) {
+      javaEl.innerHTML = '<span style="color:var(--green)"><i class="fas fa-check-circle"></i> Java 21 instalado (Eclipse Temurin)</span>';
+      javaBtn.style.display = 'none';
+    } else {
+      javaEl.innerHTML = '<span style="color:var(--dim)"><i class="fas fa-circle-xmark" style="color:var(--red)"></i> No detectado</span>';
+      javaBtn.style.display = 'flex';
+    }
+  } catch {}
+
+  // Installed games
+  try {
+    const installed = await api.getInstalledGames();
+    const el = document.getElementById('settingsGames');
+    el.innerHTML = Object.entries(GAMES).map(([id, g]) => {
+      const info = installed[id] || { installed: false };
+      return `
+        <div class="game-install-row">
+          <span style="font-size:26px;filter:drop-shadow(0 0 6px ${g.color}55)">${g.icon}</span>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:13px;font-weight:600;color:var(--text);">${g.name}</div>
+            <div style="font-size:11px;color:var(--dim);margin-top:2px;">
+              ${info.installed
+                ? `<span style="color:var(--muted);font-size:10px;font-family:'JetBrains Mono',monospace;">${info.dir}</span>`
+                : 'No instalado'}
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+            <span class="${info.installed ? 'badge-installed' : 'badge-not-installed'}">${info.installed ? '✓ Instalado' : 'No instalado'}</span>
+            ${info.installed
+              ? `<button class="action-btn btn-secondary" style="font-size:11px;padding:6px 10px;" onclick="api.openFolder('${id}')"><i class="fas fa-folder-open"></i></button>`
+              : ''}
+          </div>
+        </div>`;
+    }).join('');
+  } catch {}
+}
+
+async function openServersFolder() {
+  try {
+    const paths = await api.getDataPaths();
+    // Use shell.openPath via open-data-folder equivalent
+    api.openUrl('file:///' + paths.serversDir.replace(/\\/g, '/'));
+  } catch {}
+}
+
+async function reinstallJava() {
+  const btn = document.getElementById('settingsJavaBtn');
+  const status = document.getElementById('settingsJavaStatus');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Instalando...';
+  status.innerHTML = '<span style="color:var(--yellow)"><i class="fas fa-spinner fa-spin"></i> Descargando Java 21...</span>';
+  const r = await api.installJava();
+  btn.disabled = false;
+  if (r.success) {
+    status.innerHTML = '<span style="color:var(--green)"><i class="fas fa-check-circle"></i> Java 21 instalado correctamente</span>';
+    btn.style.display = 'none';
+    toast('success', '✓ Java 21 instalado.');
+  } else {
+    status.innerHTML = '<span style="color:var(--red)"><i class="fas fa-circle-xmark"></i> Error: ' + (r.error || 'error desconocido') + '</span>';
+    btn.innerHTML = '<i class="fas fa-rotate-right"></i> Reintentar';
+    toast('error', 'No se pudo instalar Java: ' + r.error);
+  }
+}
+
+// ─── DELETE SERVER ────────────────────────────────────────────────────────────
+let _pendingDeleteId = null;
+
+function deleteServer(id, e) {
+  e.stopPropagation();
+  const svr = servers.find(s => s.id === id);
+  if (!svr) return;
+  _pendingDeleteId = id;
+  const g = GAMES[svr.gameId] || {};
+  document.getElementById('deleteMsg').innerHTML =
+    `¿Eliminar el servidor <strong style="color:white">"${svr.name}"</strong>?<br><span style="font-size:12px;color:var(--dim);">${g.icon || ''} ${g.name || svr.gameId}</span>`;
+  document.getElementById('deleteOverlay').style.display = 'flex';
+}
+
+function closeDeleteModal() {
+  document.getElementById('deleteOverlay').style.display = 'none';
+  _pendingDeleteId = null;
+}
+
+async function confirmDelete() {
+  if (!_pendingDeleteId) return;
+  const id  = _pendingDeleteId;
+  const svr = servers.find(s => s.id === id);
+  closeDeleteModal();
+
+  await api.deleteServer(id);
+  servers = servers.filter(s => s.id !== id);
+
+  if (currentServer?.id === id) {
+    currentServer = null;
+    if (servers.length > 0) showServer(servers[0].id);
+    else showView('home');
+  }
+
+  renderSidebar();
+  toast('warn', `Servidor "${svr?.name || ''}" eliminado.`);
+}
+
+document.getElementById('deleteOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('deleteOverlay')) closeDeleteModal();
+});
+
+function setActiveNav(name) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (name === 'home') document.getElementById('navHome')?.classList.add('active');
+  if (name === 'settings') document.getElementById('navSettings')?.classList.add('active');
+}
+
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  const panels = { console: 'tabConsole', config: 'tabConfig' };
+  document.getElementById(panels[name])?.classList.add('active');
+  event?.currentTarget?.classList.add('active');
+}
+
+// ─── TOAST ───────────────────────────────────────────────────────────────────
+function toast(type, msg) {
+  const icons  = { success:'fa-check-circle', warn:'fa-triangle-exclamation', error:'fa-xmark-circle', info:'fa-circle-info' };
+  const colors = { success:'#10b981', warn:'#f59e0b', error:'#ef4444', info:'#00d4ff' };
+  const el  = document.getElementById('toast');
+  const ico = document.getElementById('toastIcon');
+  ico.className = `fas ${icons[type] || icons.info}`;
+  ico.style.color = colors[type] || colors.info;
+  document.getElementById('toastMsg').textContent = msg;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// ─── UTILS ───────────────────────────────────────────────────────────────────
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ─── START ───────────────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>

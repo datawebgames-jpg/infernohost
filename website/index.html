@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>InfernoHost — Servidores de juegos profesionales · ARK · Conan · Minecraft · Valheim</title>
+  <meta name="description" content="Hosting de servidores de juego profesional. ARK Survival Ascended, Conan Exiles, Minecraft, Valheim. Desde $40.000/mes. O armá tu propio server con nuestra app."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --fire:#f97316;--fire2:#ef4444;--gold:#fbbf24;
+      --dark:#06090f;--dark2:#0c1220;--card:#111827;
+      --border:rgba(249,115,22,.18);--text:#e2e8f0;--muted:#64748b;
+      --green:#22c55e;--blue:#3b82f6;--purple:#a855f7;
+    }
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',sans-serif;background:var(--dark);color:var(--text);overflow-x:hidden}
+
+    /* ══════════════════════════════ NAV ══════════════════════════════ */
+    nav{
+      position:fixed;top:0;width:100%;z-index:200;
+      background:rgba(6,9,15,.9);backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--border);
+      display:flex;align-items:center;justify-content:space-between;
+      padding:0 48px;height:68px;
+    }
+    .logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .logo svg{width:32px;height:32px}
+    .logo-txt{
+      font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;
+      background:linear-gradient(130deg,var(--fire),var(--gold));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    }
+    .nav-links{display:flex;align-items:center;gap:36px}
+    .nav-links a{color:var(--muted);text-decoration:none;font-size:14px;font-weight:500;transition:color .2s}
+    .nav-links a:hover{color:var(--fire)}
+    .btn-nav{
+      background:linear-gradient(135deg,var(--fire),var(--fire2));
+      color:#fff!important;padding:9px 22px;border-radius:9px;
+      font-weight:700;font-size:14px;letter-spacing:.3px;
+      box-shadow:0 4px 20px rgba(249,115,22,.35);transition:transform .2s,box-shadow .2s;
+    }
+    .btn-nav:hover{transform:translateY(-1px);box-shadow:0 6px 28px rgba(249,115,22,.5)}
+
+    /* ══════════════════════════════ HERO ══════════════════════════════ */
+    .hero{
+      min-height:100vh;position:relative;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      text-align:center;padding:88px 24px 60px;overflow:hidden;
+    }
+    .hero-bg{
+      position:absolute;inset:0;z-index:0;
+      background-image:url('hero.jpg');
+      background-size:cover;background-position:center top;
+      filter:brightness(.65) saturate(1.2);
+    }
+    .hero-overlay{
+      position:absolute;inset:0;z-index:1;
+      background:linear-gradient(
+        to bottom,
+        rgba(6,9,15,.1) 0%,
+        rgba(6,9,15,.35) 50%,
+        rgba(6,9,15,.95) 100%
+      );
+    }
+    /* glow rings */
+    .hero-glow{
+      position:absolute;inset:0;z-index:1;pointer-events:none;
+      background:
+        radial-gradient(ellipse 70% 50% at 50% 40%,rgba(249,115,22,.12) 0%,transparent 70%);
+    }
+    .hero-content{position:relative;z-index:2;max-width:900px}
+
+    .hero-pretitle{
+      display:inline-flex;align-items:center;gap:8px;
+      background:rgba(249,115,22,.12);border:1px solid rgba(249,115,22,.35);
+      border-radius:99px;padding:6px 20px;
+      font-size:13px;font-weight:600;color:var(--gold);letter-spacing:.5px;
+      margin-bottom:28px;
+    }
+    .hero h1{
+      font-family:'Rajdhani',sans-serif;
+      font-size:clamp(48px,8vw,96px);font-weight:700;line-height:.95;
+      margin-bottom:20px;
+    }
+    .hero h1 em{
+      font-style:normal;
+      background:linear-gradient(135deg,var(--fire) 20%,var(--gold) 80%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    }
+    .hero-desc{
+      font-size:clamp(16px,2vw,20px);color:rgba(226,232,240,.75);
+      max-width:620px;margin:0 auto 36px;line-height:1.7;
+    }
+
+    /* game badges */
+    .game-badges{
+      display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:44px;
+    }
+    .gbadge{
+      display:flex;align-items:center;gap:7px;
+      padding:8px 16px;border-radius:10px;
+      font-size:13px;font-weight:600;border:1px solid;
+      backdrop-filter:blur(8px);
+      transition:transform .2s;cursor:default;
+    }
+    .gbadge:hover{transform:translateY(-3px)}
+    .gbadge.ark-sa{background:rgba(249,115,22,.12);border-color:rgba(249,115,22,.4);color:#fb923c}
+    .gbadge.ark-se{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.4);color:var(--green)}
+    .gbadge.conan{background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.4);color:#c084fc}
+    .gbadge.mc{background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.4);color:#60a5fa}
+    .gbadge.val{background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.4);color:var(--gold)}
+
+    /* CTA buttons */
+    .hero-cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
+    .btn-fire{
+      display:inline-flex;align-items:center;gap:10px;
+      background:linear-gradient(135deg,var(--fire),var(--fire2));
+      color:#fff;text-decoration:none;padding:16px 36px;border-radius:12px;
+      font-size:17px;font-weight:700;
+      box-shadow:0 0 50px rgba(249,115,22,.45);
+      transition:transform .2s,box-shadow .2s;
+    }
+    .btn-fire:hover{transform:translateY(-3px);box-shadow:0 0 70px rgba(249,115,22,.65)}
+    .btn-ghost{
+      display:inline-flex;align-items:center;gap:8px;
+      background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);
+      color:var(--text);text-decoration:none;padding:16px 30px;border-radius:12px;
+      font-size:16px;font-weight:500;transition:background .2s;
+    }
+    .btn-ghost:hover{background:rgba(255,255,255,.12)}
+    .hero-note{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px;justify-content:center}
+    .hero-note b{color:var(--gold)}
+
+    /* ══════════════════════════════ SECTION HELPERS ══════════════════════════════ */
+    section{padding:90px 24px}
+    .sec-label{text-align:center;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--fire);font-weight:700;margin-bottom:14px}
+    .sec-title{text-align:center;font-family:'Rajdhani',sans-serif;font-size:clamp(30px,5vw,52px);font-weight:700;margin-bottom:14px;line-height:1.1}
+    .sec-sub{text-align:center;color:var(--muted);max-width:560px;margin:0 auto 56px;font-size:16px;line-height:1.7}
+    .container{max-width:1140px;margin:0 auto}
+
+    /* ══════════════════════════════ SERVICIOS ══════════════════════════════ */
+    .servicios-bg{background:var(--dark2)}
+    .servicios-grid{
+      display:grid;grid-template-columns:1fr 1fr;gap:24px;
+    }
+    .serv-card{
+      border-radius:20px;padding:36px;
+      border:1px solid rgba(255,255,255,.08);
+      position:relative;overflow:hidden;
+      transition:transform .3s,border-color .3s;
+    }
+    .serv-card:hover{transform:translateY(-6px)}
+    .serv-card.hosting{
+      background:linear-gradient(145deg,rgba(249,115,22,.08) 0%,rgba(239,68,68,.04) 100%);
+      border-color:rgba(249,115,22,.25);
+    }
+    .serv-card.hosting:hover{border-color:rgba(249,115,22,.5)}
+    .serv-card.app{
+      background:linear-gradient(145deg,rgba(59,130,246,.08) 0%,rgba(168,85,247,.04) 100%);
+      border-color:rgba(59,130,246,.25);
+    }
+    .serv-card.app:hover{border-color:rgba(59,130,246,.5)}
+    .serv-icon{font-size:48px;margin-bottom:20px;display:block}
+    .serv-badge{
+      display:inline-block;font-size:11px;font-weight:700;letter-spacing:1px;
+      text-transform:uppercase;padding:4px 14px;border-radius:99px;margin-bottom:16px;
+    }
+    .serv-badge.orange{background:rgba(249,115,22,.15);color:var(--fire);border:1px solid rgba(249,115,22,.3)}
+    .serv-badge.blue{background:rgba(59,130,246,.15);color:#60a5fa;border:1px solid rgba(59,130,246,.3)}
+    .serv-title{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;margin-bottom:12px}
+    .serv-desc{color:var(--muted);font-size:15px;line-height:1.7;margin-bottom:24px}
+    .serv-list{list-style:none;margin-bottom:28px}
+    .serv-list li{font-size:14px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:10px}
+    .serv-list li:last-child{border:none}
+    .chk{font-weight:700}
+    .chk.o{color:var(--fire)}.chk.b{color:#60a5fa}
+    .serv-card-glow{
+      position:absolute;width:200px;height:200px;border-radius:50%;
+      filter:blur(60px);opacity:.15;right:-40px;bottom:-40px;pointer-events:none;
+    }
+    .serv-card.hosting .serv-card-glow{background:var(--fire)}
+    .serv-card.app .serv-card-glow{background:#3b82f6}
+
+    /* ══════════════════════════════ PRICING HOSTING ══════════════════════════════ */
+    .pricing-tabs{
+      display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:40px;
+    }
+    .ptab{
+      padding:8px 20px;border-radius:10px;font-size:14px;font-weight:600;
+      border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);
+      color:var(--muted);cursor:pointer;transition:all .2s;
+    }
+    .ptab.active,.ptab:hover{
+      background:rgba(249,115,22,.15);border-color:rgba(249,115,22,.4);color:var(--fire);
+    }
+    .pricing-grid{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));
+      gap:24px;max-width:1000px;margin:0 auto;
+    }
+    .price-card{
+      background:var(--card);border:1px solid rgba(255,255,255,.08);
+      border-radius:20px;padding:36px 30px;position:relative;
+      transition:transform .3s,border-color .3s;
+    }
+    .price-card:hover{transform:translateY(-6px)}
+    .price-card.hot{
+      border-color:var(--fire);
+      box-shadow:0 0 60px rgba(249,115,22,.15),inset 0 0 40px rgba(249,115,22,.03);
+    }
+    .popular-badge{
+      position:absolute;top:-13px;left:50%;transform:translateX(-50%);
+      background:linear-gradient(135deg,var(--fire),var(--fire2));
+      color:#fff;font-size:11px;font-weight:800;
+      padding:4px 22px;border-radius:99px;white-space:nowrap;letter-spacing:.5px;
+    }
+    .price-game{
+      display:flex;align-items:center;gap:10px;margin-bottom:20px;
+    }
+    .price-game-icon{font-size:28px}
+    .price-game-name{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700}
+    .price-game-sub{font-size:12px;color:var(--muted)}
+    .price-slot-tag{
+      display:inline-flex;align-items:center;gap:6px;
+      background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.25);
+      border-radius:8px;padding:4px 12px;font-size:12px;font-weight:600;color:var(--fire);
+      margin-bottom:16px;
+    }
+    .price-amount{
+      font-family:'Rajdhani',sans-serif;line-height:1;margin-bottom:4px;
+    }
+    .price-currency{font-size:22px;color:var(--muted);vertical-align:top;margin-top:6px}
+    .price-number{font-size:52px;font-weight:700}
+    .price-period{font-size:13px;color:var(--muted);margin-bottom:24px}
+    .price-divider{height:1px;background:rgba(255,255,255,.07);margin:20px 0}
+    .price-feats{list-style:none;margin-bottom:28px}
+    .price-feats li{
+      font-size:13px;padding:7px 0;
+      border-bottom:1px solid rgba(255,255,255,.04);
+      display:flex;align-items:flex-start;gap:10px;
+    }
+    .price-feats li:last-child{border:none}
+    .pfi{color:var(--fire);font-weight:700;flex-shrink:0;margin-top:1px}
+    .pfi.gray{color:var(--muted)}
+    .btn-price{
+      display:block;text-align:center;text-decoration:none;
+      padding:13px 20px;border-radius:11px;font-size:14px;font-weight:700;
+      transition:transform .2s,box-shadow .2s;
+    }
+    .btn-price:hover{transform:translateY(-2px)}
+    .btn-price.fire{
+      background:linear-gradient(135deg,var(--fire),var(--fire2));
+      color:#fff;box-shadow:0 6px 25px rgba(249,115,22,.4);
+    }
+    .btn-price.outline{
+      background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--text);
+    }
+    .btn-price.outline:hover{background:rgba(255,255,255,.08)}
+
+    /* ══════════════════════════════ JUEGOS APP ══════════════════════════════ */
+    .games-bg{background:var(--dark2)}
+    .games-grid5{
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:16px;
+    }
+    .game-card{
+      border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.08);
+      background:var(--card);transition:transform .3s,box-shadow .3s;cursor:default;
+    }
+    .game-card:hover{transform:translateY(-8px);box-shadow:0 24px 60px rgba(0,0,0,.5)}
+    .game-top{height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;position:relative;overflow:hidden}
+    .game-top::before{
+      content:'';position:absolute;inset:0;opacity:.3;
+    }
+    .game-top.ark-sa{background:linear-gradient(135deg,#1c0800,#7c2d12)}
+    .game-top.ark-sa::before{background:radial-gradient(circle at 50% 80%,#f97316,transparent 60%)}
+    .game-top.ark-se{background:linear-gradient(135deg,#052e16,#14532d)}
+    .game-top.ark-se::before{background:radial-gradient(circle at 50% 80%,#22c55e,transparent 60%)}
+    .game-top.conan{background:linear-gradient(135deg,#1a0030,#6b21a8)}
+    .game-top.conan::before{background:radial-gradient(circle at 50% 80%,#a855f7,transparent 60%)}
+    .game-top.mc{background:linear-gradient(135deg,#0c1a4a,#1d4ed8)}
+    .game-top.mc::before{background:radial-gradient(circle at 50% 80%,#60a5fa,transparent 60%)}
+    .game-top.val{background:linear-gradient(135deg,#1c1000,#78350f)}
+    .game-top.val::before{background:radial-gradient(circle at 50% 80%,#fbbf24,transparent 60%)}
+    .game-emoji{font-size:44px;position:relative;z-index:1}
+    .game-status{
+      font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+      padding:3px 10px;border-radius:99px;position:relative;z-index:1;
+    }
+    .game-status.ready{background:rgba(34,197,94,.2);color:var(--green);border:1px solid rgba(34,197,94,.35)}
+    .game-status.soon{background:rgba(251,191,36,.15);color:var(--gold);border:1px solid rgba(251,191,36,.3)}
+    .game-body{padding:16px}
+    .game-name{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700;margin-bottom:4px}
+    .game-tagline{font-size:11px;color:var(--muted);line-height:1.5;margin-bottom:12px}
+    .game-chips{display:flex;flex-wrap:wrap;gap:4px}
+    .chip{
+      font-size:10px;font-weight:600;padding:2px 8px;border-radius:6px;
+      background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+      color:var(--muted);
+    }
+
+    /* ══════════════════════════════ FEATURES APP ══════════════════════════════ */
+    .feat-grid{
+      display:grid;grid-template-columns:repeat(3,1fr);
+      gap:20px;max-width:1000px;margin:0 auto;
+    }
+    .feat{
+      background:var(--card);border:1px solid rgba(255,255,255,.07);
+      border-radius:14px;padding:24px;
+      transition:border-color .3s;
+    }
+    .feat:hover{border-color:rgba(249,115,22,.3)}
+    .feat-ico{font-size:30px;margin-bottom:14px}
+    .feat-t{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;margin-bottom:6px}
+    .feat-d{font-size:13px;color:var(--muted);line-height:1.65}
+
+    /* ══════════════════════════════ APP MOCKUP STRIP ══════════════════════════════ */
+    .mockup-strip{
+      max-width:1000px;margin:0 auto;
+      background:var(--card);border:1px solid var(--border);
+      border-radius:18px;overflow:hidden;
+      box-shadow:0 40px 100px rgba(0,0,0,.7);
+    }
+    .mbar{
+      background:#080e1c;padding:12px 20px;
+      display:flex;align-items:center;gap:8px;
+      border-bottom:1px solid var(--border);
+    }
+    .mdot{width:12px;height:12px;border-radius:50%}
+    .mbar-title{margin:0 auto;font-family:'Rajdhani',sans-serif;font-size:13px;color:var(--muted);letter-spacing:1px}
+    .mscreen{display:grid;grid-template-columns:210px 1fr;min-height:360px}
+    .msidebar{background:#050b15;border-right:1px solid var(--border);padding:20px 14px}
+    .mnavitem{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;font-size:12px;color:var(--muted);margin-bottom:3px}
+    .mnavitem.act{background:rgba(249,115,22,.12);color:var(--fire);border:1px solid rgba(249,115,22,.2)}
+    .mserv-card{margin-top:16px;background:rgba(249,115,22,.07);border:1px solid rgba(249,115,22,.2);border-radius:9px;padding:10px}
+    .mserv-nm{font-size:11px;font-weight:600;color:var(--fire)}
+    .mserv-gm{font-size:10px;color:var(--muted);margin-top:2px}
+    .monline{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;box-shadow:0 0 6px var(--green);margin-right:3px}
+    .mmain{padding:24px}
+    .mmtitle{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;margin-bottom:16px}
+    .mmbtns{display:flex;gap:8px;margin-bottom:18px}
+    .mmbtn{padding:7px 14px;border-radius:7px;font-size:11px;font-weight:700}
+    .mmbtn.g{background:rgba(34,197,94,.2);color:var(--green)}
+    .mmbtn.r{background:rgba(239,68,68,.2);color:#f87171}
+    .mmbtn.a{background:rgba(251,191,36,.15);color:var(--gold)}
+    .mmstats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+    .mmstat{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:9px;padding:12px}
+    .mmsl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+    .mmsv{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;margin-top:4px}
+    .mmconsole{background:#03070d;border:1px solid rgba(255,255,255,.06);border-radius:9px;padding:12px;font-family:monospace;font-size:10px;color:var(--green)}
+    .mmconsole div{margin-bottom:3px;opacity:.7}
+    .mmconsole div:last-child{opacity:1}
+    .mmtabs{display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap}
+    .mmtab{padding:5px 12px;border-radius:7px;font-size:11px;font-weight:600;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:var(--muted);cursor:default}
+    .mmtab.act{background:rgba(249,115,22,.12);color:var(--fire);border-color:rgba(249,115,22,.3)}
+
+    /* ══════════════════════════════ HOW TO ORDER ══════════════════════════════ */
+    .how-bg{background:var(--dark2)}
+    .steps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;max-width:1000px;margin:0 auto}
+    .step{text-align:center}
+    .step-num{
+      width:54px;height:54px;border-radius:50%;
+      background:rgba(249,115,22,.1);border:2px solid rgba(249,115,22,.4);
+      font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;color:var(--fire);
+      display:flex;align-items:center;justify-content:center;margin:0 auto 16px;
+    }
+    .step-title{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;margin-bottom:8px}
+    .step-desc{font-size:13px;color:var(--muted);line-height:1.65}
+
+    /* ══════════════════════════════ STATS STRIP ══════════════════════════════ */
+    .stats-strip{
+      background:linear-gradient(135deg,rgba(249,115,22,.08),rgba(239,68,68,.05));
+      border-top:1px solid rgba(249,115,22,.15);border-bottom:1px solid rgba(249,115,22,.15);
+      padding:40px 24px;
+    }
+    .stats-inner{display:flex;gap:0;max-width:900px;margin:0 auto;flex-wrap:wrap}
+    .stat-item{
+      flex:1;min-width:160px;text-align:center;
+      padding:0 20px;border-right:1px solid rgba(255,255,255,.08);
+    }
+    .stat-item:last-child{border:none}
+    .stat-num{font-family:'Rajdhani',sans-serif;font-size:48px;font-weight:700;color:var(--fire)}
+    .stat-lbl{font-size:13px;color:var(--muted);margin-top:4px}
+
+    /* ══════════════════════════════ CTA FINAL ══════════════════════════════ */
+    .cta-final{
+      padding:100px 24px;text-align:center;
+      background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(249,115,22,.1) 0%,transparent 70%);
+    }
+    .cta-final h2{font-family:'Rajdhani',sans-serif;font-size:clamp(34px,6vw,62px);font-weight:700;margin-bottom:16px}
+    .cta-final p{color:var(--muted);font-size:18px;margin-bottom:40px}
+    .cta-chips{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-top:36px}
+    .cta-chip{
+      display:flex;align-items:center;gap:8px;
+      background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+      border-radius:10px;padding:12px 22px;font-size:13px;color:var(--muted);
+    }
+    .cta-chip strong{color:var(--text)}
+
+    /* ══════════════════════════════ FOOTER ══════════════════════════════ */
+    footer{
+      background:#040710;border-top:1px solid rgba(255,255,255,.06);
+      padding:44px 24px;text-align:center;
+    }
+    footer .logo-txt{font-size:20px}
+    footer p{margin-top:12px;font-size:13px;color:var(--muted)}
+    footer a{color:var(--fire);text-decoration:none}
+
+    /* ══════════════════════════════ RESPONSIVE ══════════════════════════════ */
+    @media(max-width:900px){
+      nav{padding:0 20px}
+      .nav-links{gap:20px}
+      .servicios-grid{grid-template-columns:1fr}
+      .games-grid5{grid-template-columns:repeat(2,1fr)}
+      .feat-grid{grid-template-columns:1fr 1fr}
+      .steps-grid{grid-template-columns:repeat(2,1fr)}
+      .mscreen{grid-template-columns:1fr}
+      .msidebar{display:none}
+      .mmstats{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .nav-links a:not(.btn-nav){display:none}
+      .games-grid5{grid-template-columns:1fr 1fr}
+      .feat-grid{grid-template-columns:1fr}
+      .steps-grid{grid-template-columns:1fr 1fr}
+      .stat-item{border:none;border-bottom:1px solid rgba(255,255,255,.08);padding:16px 0}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════ NAV ═══════════════════════════ -->
+<nav>
+  <a class="logo" href="#">
+    <svg viewBox="0 0 32 32" fill="none"><path d="M16 2C16 2 6 10 6 19C6 24.5 10.5 29 16 29C21.5 29 26 24.5 26 19C26 10 16 2 16 2Z" fill="url(#fg)"/><path d="M16 14C16 14 11 18 11 22C11 24.8 13.2 27 16 27C18.8 27 21 24.8 21 22C21 18 16 14 16 14Z" fill="url(#fc)"/><defs><linearGradient id="fg" x1="16" y1="2" x2="16" y2="29" gradientUnits="userSpaceOnUse"><stop stop-color="#f97316"/><stop offset="1" stop-color="#ef4444"/></linearGradient><linearGradient id="fc" x1="16" y1="14" x2="16" y2="27" gradientUnits="userSpaceOnUse"><stop stop-color="#fbbf24"/><stop offset="1" stop-color="#f97316"/></linearGradient></defs></svg>
+    <span class="logo-txt">InfernoHost</span>
+  </a>
+  <div class="nav-links">
+    <a href="#servicios">Servicios</a>
+    <a href="#precios">Precios</a>
+    <a href="#app">La App</a>
+    <a href="#contacto" class="btn-nav">🔥 Contratar</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════ HERO ═══════════════════════════ -->
+<section class="hero" id="inicio">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-glow"></div>
+
+  <div class="hero-content">
+    <div class="hero-pretitle">🔥 Servidores de juego profesionales · Argentina</div>
+
+    <h1>
+      <em>HOST DE SERVIDORES</em><br>
+      para los mejores juegos
+    </h1>
+
+    <p class="hero-desc">
+      Jugá con tus amigos en tu <strong>propio servidor dedicado</strong>.
+      Nosotros lo hosteamos por vos — vos solo jugás. O instalá nuestra app
+      y armalo en tu propia PC, sin tocar la consola.
+    </p>
+
+    <div class="game-badges">
+      <div class="gbadge ark-sa">🔥 ARK: Survival Ascended</div>
+      <div class="gbadge ark-se">🦖 ARK: Survival Evolved</div>
+      <div class="gbadge conan">⚔️ Conan Exiles Enhanced</div>
+      <div class="gbadge mc">⛏️ Minecraft</div>
+      <div class="gbadge val">🪓 Valheim</div>
+    </div>
+
+    <div class="hero-cta">
+      <a href="#precios" class="btn-fire">🎮 Ver planes y precios</a>
+      <a href="#app" class="btn-ghost">⬇ Descargar la app</a>
+    </div>
+
+    <p class="hero-note">
+      ✓ Servidor listo en &lt;24 hs &nbsp;·&nbsp;
+      ✓ Soporte por WhatsApp &nbsp;·&nbsp;
+      ✓ Pago en pesos argentinos &nbsp;·&nbsp;
+      ✓ <b>App con 30 días gratis</b>
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ STATS ═══════════════════════════ -->
+<div class="stats-strip">
+  <div class="stats-inner">
+    <div class="stat-item">
+      <div class="stat-num">5</div>
+      <div class="stat-lbl">Juegos soportados</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">24hs</div>
+      <div class="stat-lbl">Tiempo de activación</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">15</div>
+      <div class="stat-lbl">Mods incluidos (con mods)</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">$40k</div>
+      <div class="stat-lbl">Precio mensual desde</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">99%</div>
+      <div class="stat-lbl">Uptime garantizado</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ SERVICIOS ═══════════════════════════ -->
+<section id="servicios" class="servicios-bg">
+  <div class="container">
+    <div class="sec-label">¿Qué ofrecemos?</div>
+    <h2 class="sec-title">Dos formas de tener tu servidor</h2>
+    <p class="sec-sub">Elegí la opción que mejor se adapta a vos</p>
+
+    <div class="servicios-grid">
+
+      <div class="serv-card hosting">
+        <div class="serv-card-glow"></div>
+        <span class="serv-icon">🖥️</span>
+        <span class="serv-badge orange">Hosting Gestionado</span>
+        <h3 class="serv-title">Nosotros hosteamos<br>tu servidor</h3>
+        <p class="serv-desc">
+          Pagás mensual y nosotros nos encargamos de todo: instalación, configuración, actualizaciones y soporte. Vos solo conectás tu IP y a jugar.
+        </p>
+        <ul class="serv-list">
+          <li><span class="chk o">✦</span> ARK SA, ARK SE, Conan Exiles, Minecraft, Valheim</li>
+          <li><span class="chk o">✦</span> 20 o 40 slots de jugadores</li>
+          <li><span class="chk o">✦</span> Sin mods o hasta 15 mods incluidos</li>
+          <li><span class="chk o">✦</span> Backups automáticos</li>
+          <li><span class="chk o">✦</span> Panel de control web</li>
+          <li><span class="chk o">✦</span> Soporte 24/7 por WhatsApp</li>
+          <li><span class="chk o">✦</span> Renovación mensual · Sin contratos</li>
+        </ul>
+        <a href="#precios" class="btn-price fire">Ver precios →</a>
+      </div>
+
+      <div class="serv-card app">
+        <div class="serv-card-glow"></div>
+        <span class="serv-icon">💻</span>
+        <span class="serv-badge blue">InfernoHost Manager App</span>
+        <h3 class="serv-title">Armá tu server<br>en tu propia PC</h3>
+        <p class="serv-desc">
+          Descargá nuestra aplicación para Windows y administrá tu propio servidor de ARK, Conan, Minecraft o Valheim desde una interfaz visual. Sin tocar la consola.
+        </p>
+        <ul class="serv-list">
+          <li><span class="chk b">✦</span> Windows 10 / 11 · 64-bit</li>
+          <li><span class="chk b">✦</span> Descarga automática de archivos del servidor</li>
+          <li><span class="chk b">✦</span> Configuración visual completa</li>
+          <li><span class="chk b">✦</span> Monitor en tiempo real</li>
+          <li><span class="chk b">✦</span> Soporte de mods integrado</li>
+          <li><span class="chk b">✦</span> Cluster multi-mapa (ARK)</li>
+          <li><span class="chk b">✦</span> 30 días gratis · Luego $15 USD pago único</li>
+        </ul>
+        <a href="#app-download" class="btn-price outline">⬇ Descargar gratis</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ PRECIOS HOSTING ═══════════════════════════ -->
+<section id="precios">
+  <div class="container">
+    <div class="sec-label">Hosting Gestionado</div>
+    <h2 class="sec-title">Precios claros, en pesos</h2>
+    <p class="sec-sub">Sin sorpresas. Pagás mensual y cancelás cuando querés. Incluye soporte por WhatsApp.</p>
+
+    <!-- CONAN EXILES -->
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;margin-bottom:6px;text-align:center">
+        ⚔️ Conan Exiles <span style="color:#c084fc">Enhanced</span>
+      </h3>
+      <p style="text-align:center;color:var(--muted);font-size:14px;margin-bottom:28px">El RPG de supervivencia más completo. Mundo abierto, edificación, PvP y PvE.</p>
+      <div class="pricing-grid">
+
+        <div class="price-card">
+          <div class="price-game">
+            <span class="price-game-icon">⚔️</span>
+            <div>
+              <div class="price-game-name">Plan Básico</div>
+              <div class="price-game-sub">Conan Exiles Enhanced</div>
+            </div>
+          </div>
+          <div class="price-slot-tag">👥 Hasta 20 personajes</div>
+          <div class="price-amount">
+            <span class="price-currency">$</span>
+            <span class="price-number">40.000</span>
+          </div>
+          <div class="price-period">pesos argentinos / mes</div>
+          <div class="price-divider"></div>
+          <ul class="price-feats">
+            <li><span class="pfi">✦</span> 20 slots de jugadores simultáneos</li>
+            <li><span class="pfi">✦</span> Sin mods o hasta 15 mods</li>
+            <li><span class="pfi">✦</span> Enhanced Edition (todas las DLC)</li>
+            <li><span class="pfi">✦</span> Configuración personalizada</li>
+            <li><span class="pfi">✦</span> Backups diarios</li>
+            <li><span class="pfi gray">–</span> DLC adicionales no incluidas</li>
+          </ul>
+          <a href="#contacto" class="btn-price outline">💬 Contratar</a>
+        </div>
+
+        <div class="price-card hot">
+          <div class="popular-badge">⭐ MÁS POPULAR</div>
+          <div class="price-game">
+            <span class="price-game-icon">⚔️</span>
+            <div>
+              <div class="price-game-name">Plan PRO</div>
+              <div class="price-game-sub">Conan Exiles Enhanced</div>
+            </div>
+          </div>
+          <div class="price-slot-tag">👥 Hasta 40 personajes</div>
+          <div class="price-amount">
+            <span class="price-currency">$</span>
+            <span class="price-number">70.000</span>
+          </div>
+          <div class="price-period">pesos argentinos / mes</div>
+          <div class="price-divider"></div>
+          <ul class="price-feats">
+            <li><span class="pfi">✦</span> 40 slots de jugadores simultáneos</li>
+            <li><span class="pfi">✦</span> Sin mods o hasta 15 mods</li>
+            <li><span class="pfi">✦</span> Enhanced Edition (todas las DLC)</li>
+            <li><span class="pfi">✦</span> Configuración personalizada</li>
+            <li><span class="pfi">✦</span> Backups diarios + soporte prioritario</li>
+            <li><span class="pfi">✦</span> Recursos dedicados</li>
+          </ul>
+          <a href="#contacto" class="btn-price fire">🔥 Contratar ahora</a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ARK -->
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;margin-bottom:6px;text-align:center">
+        🔥 ARK: Survival <span style="color:#fb923c">Ascended</span> &amp; <span style="color:#22c55e">Evolved</span>
+      </h3>
+      <p style="text-align:center;color:var(--muted);font-size:14px;margin-bottom:28px">Los dos juegos de dinosaurios más jugados del mundo. Dinosaurios, edificación y supervivencia.</p>
+      <div class="pricing-grid">
+
+        <div class="price-card">
+          <div class="price-game">
+            <span class="price-game-icon">🦖</span>
+            <div>
+              <div class="price-game-name">Plan Básico ARK</div>
+              <div class="price-game-sub">Survival Ascended o Evolved</div>
+            </div>
+          </div>
+          <div class="price-slot-tag">👥 Hasta 20 jugadores</div>
+          <div class="price-amount">
+            <span class="price-currency">$</span>
+            <span class="price-number">40.000</span>
+          </div>
+          <div class="price-period">pesos argentinos / mes</div>
+          <div class="price-divider"></div>
+          <ul class="price-feats">
+            <li><span class="pfi">✦</span> 20 slots de jugadores</li>
+            <li><span class="pfi">✦</span> 1 mapa a elección</li>
+            <li><span class="pfi">✦</span> Sin mods o hasta 15 mods</li>
+            <li><span class="pfi">✦</span> Tasas personalizables (XP, cría, etc.)</li>
+            <li><span class="pfi">✦</span> Backups diarios</li>
+            <li><span class="pfi gray">–</span> Sin cluster multi-mapa</li>
+          </ul>
+          <a href="#contacto" class="btn-price outline">💬 Contratar</a>
+        </div>
+
+        <div class="price-card hot">
+          <div class="popular-badge">⭐ MÁS POPULAR</div>
+          <div class="price-game">
+            <span class="price-game-icon">🔥</span>
+            <div>
+              <div class="price-game-name">Plan PRO ARK</div>
+              <div class="price-game-sub">Survival Ascended o Evolved</div>
+            </div>
+          </div>
+          <div class="price-slot-tag">👥 Hasta 40 jugadores</div>
+          <div class="price-amount">
+            <span class="price-currency">$</span>
+            <span class="price-number">70.000</span>
+          </div>
+          <div class="price-period">pesos argentinos / mes</div>
+          <div class="price-divider"></div>
+          <ul class="price-feats">
+            <li><span class="pfi">✦</span> 40 slots de jugadores</li>
+            <li><span class="pfi">✦</span> Cluster multi-mapa incluido</li>
+            <li><span class="pfi">✦</span> Sin mods o hasta 15 mods</li>
+            <li><span class="pfi">✦</span> Tasas personalizables + admin</li>
+            <li><span class="pfi">✦</span> Backups diarios + soporte prioritario</li>
+            <li><span class="pfi">✦</span> Recursos dedicados</li>
+          </ul>
+          <a href="#contacto" class="btn-price fire">🔥 Contratar ahora</a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MINECRAFT + VALHEIM -->
+    <div>
+      <h3 style="font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;margin-bottom:6px;text-align:center">
+        ⛏️ Minecraft &amp; 🪓 Valheim
+      </h3>
+      <p style="text-align:center;color:var(--muted);font-size:14px;margin-bottom:28px">Precios según jugadores y configuración. Consultanos por WhatsApp para obtener tu precio personalizado.</p>
+      <div style="max-width:600px;margin:0 auto">
+        <div class="price-card" style="text-align:center">
+          <div style="font-size:52px;margin-bottom:16px">⛏️ 🪓</div>
+          <h3 style="font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;margin-bottom:8px">Desde $40.000 / mes</h3>
+          <p style="color:var(--muted);font-size:14px;margin-bottom:24px;line-height:1.7">
+            Minecraft (Java o Bedrock) y Valheim disponibles.<br>
+            Precio varía según jugadores, mods y plugins.
+          </p>
+          <a href="#contacto" class="btn-price fire">💬 Consultar precio</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════ JUEGOS COMPATIBLES ═══════════════════════════ -->
+<section class="games-bg" id="juegos">
+  <div class="container">
+    <div class="sec-label">Juegos compatibles</div>
+    <h2 class="sec-title">5 juegos · 1 sola plataforma</h2>
+    <p class="sec-sub">Hosting y app disponibles para todos estos títulos. Más juegos próximamente.</p>
+
+    <div class="games-grid5">
+
+      <div class="game-card">
+        <div class="game-top ark-sa">
+          <div class="game-emoji">🔥</div>
+          <div class="game-status ready">✓ Disponible</div>
+        </div>
+        <div class="game-body">
+          <div class="game-name">ARK: Survival Ascended</div>
+          <div class="game-tagline">Unreal Engine 5 · Crossplay · CurseForge mods</div>
+          <div class="game-chips">
+            <span class="chip">PvP</span><span class="chip">PvE</span>
+            <span class="chip">Cluster</span><span class="chip">Mods</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="game-top ark-se">
+          <div class="game-emoji">🦖</div>
+          <div class="game-status ready">✓ Disponible</div>
+        </div>
+        <div class="game-body">
+          <div class="game-name">ARK: Survival Evolved</div>
+          <div class="game-tagline">El original · Miles de mods · Gratuito Steam</div>
+          <div class="game-chips">
+            <span class="chip">PvP</span><span class="chip">PvE</span>
+            <span class="chip">Workshop</span><span class="chip">Cluster</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="game-top conan">
+          <div class="game-emoji">⚔️</div>
+          <div class="game-status ready">✓ Disponible</div>
+        </div>
+        <div class="game-body">
+          <div class="game-name">Conan Exiles Enhanced</div>
+          <div class="game-tagline">Sobrevivir · Conquistar · Todas las DLC</div>
+          <div class="game-chips">
+            <span class="chip">PvP</span><span class="chip">PvE</span>
+            <span class="chip">Rol</span><span class="chip">Mods</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="game-top mc">
+          <div class="game-emoji">⛏️</div>
+          <div class="game-status ready">✓ Disponible</div>
+        </div>
+        <div class="game-body">
+          <div class="game-name">Minecraft</div>
+          <div class="game-tagline">Java & Bedrock · Mods · Plugins · Mundos</div>
+          <div class="game-chips">
+            <span class="chip">Java</span><span class="chip">Bedrock</span>
+            <span class="chip">Plugins</span><span class="chip">Mods</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="game-top val">
+          <div class="game-emoji">🪓</div>
+          <div class="game-status ready">✓ Disponible</div>
+        </div>
+        <div class="game-body">
+          <div class="game-name">Valheim</div>
+          <div class="game-tagline">Vikings · Construcción · Exploración</div>
+          <div class="game-chips">
+            <span class="chip">Co-op</span><span class="chip">PvP</span>
+            <span class="chip">Mods</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ APP ═══════════════════════════ -->
+<section id="app">
+  <div class="container">
+    <div class="sec-label">InfernoHost Manager App</div>
+    <h2 class="sec-title">Armá tu server en<br>tu propia PC</h2>
+    <p class="sec-sub">Para los que tienen una PC potente y quieren hosrtear ellos mismos. Instalador para Windows, interfaz visual, sin consola.</p>
+
+    <!-- MOCKUP -->
+    <div class="mockup-strip" style="margin-bottom:56px">
+      <div class="mbar">
+        <div class="mdot" style="background:#ef4444"></div>
+        <div class="mdot" style="background:#f59e0b"></div>
+        <div class="mdot" style="background:#22c55e"></div>
+        <div class="mbar-title">🔥 INFERNOHOST MANAGER &nbsp;·&nbsp; ✓ Licencia activa</div>
+      </div>
+      <div class="mscreen">
+        <div class="msidebar">
+          <div class="mnavitem act">🏠 Inicio</div>
+          <div class="mnavitem">⚙️ Configuración</div>
+          <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin:16px 0 8px;padding-left:12px">Mis Servidores</div>
+          <div class="mserv-card">
+            <div class="mserv-nm"><span class="monline"></span>ARK SA — TheIsland</div>
+            <div class="mserv-gm">ARK: Survival Ascended</div>
+          </div>
+        </div>
+        <div class="mmain">
+          <div class="mmtitle">🔥 ARK SA Server &nbsp;<span style="color:var(--green);font-size:14px">● Online</span></div>
+          <div class="mmtabs">
+            <div class="mmtab act">General</div>
+            <div class="mmtab">Tasas</div>
+            <div class="mmtab">Breeding</div>
+            <div class="mmtab">Combate</div>
+            <div class="mmtab">Stats/Nivel</div>
+            <div class="mmtab">Entorno</div>
+            <div class="mmtab">Cluster</div>
+            <div class="mmtab">Mods</div>
+          </div>
+          <div class="mmbtns">
+            <div class="mmbtn g">▶ Iniciar</div>
+            <div class="mmbtn r">■ Detener</div>
+            <div class="mmbtn a">↺ Reiniciar</div>
+          </div>
+          <div class="mmstats">
+            <div class="mmstat"><div class="mmsl">Uptime</div><div class="mmsv" style="color:var(--green)">6h12m</div></div>
+            <div class="mmstat"><div class="mmsl">Puerto</div><div class="mmsv">7777</div></div>
+            <div class="mmstat"><div class="mmsl">RAM</div><div class="mmsv">14 GB</div></div>
+            <div class="mmstat"><div class="mmsl">Jugadores</div><div class="mmsv" style="color:var(--fire)">5/20</div></div>
+          </div>
+          <div class="mmconsole">
+            <div>18:42:01 ● ARK:SA — Servidor iniciado en TheIsland_WP</div>
+            <div>18:42:03 ● Escuchando en 0.0.0.0:7777 | Query: 27016</div>
+            <div style="color:#fbbf24">19:08:44 ● DinoSlayer99 se conectó · Ping: 22ms</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEATURES -->
+    <div class="feat-grid">
+      <div class="feat">
+        <div class="feat-ico">⬇️</div>
+        <div class="feat-t">Descarga automática</div>
+        <p class="feat-d">SteamCMD integrado. Bajá los archivos del servidor de ARK, Conan, Minecraft o Valheim con un clic.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-ico">🎛️</div>
+        <div class="feat-t">8 tabs de configuración</div>
+        <p class="feat-d">General, Tasas, Breeding, Combate, Stats por Nivel, Entorno, Cluster y Mods. Todo con sliders visuales.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-ico">🗺️</div>
+        <div class="feat-t">Sistema de Cluster</div>
+        <p class="feat-d">Conectá múltiples mapas de ARK. Los jugadores viajan entre servidores con personajes y dinos.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-ico">🧩</div>
+        <div class="feat-t">Mods integrados</div>
+        <p class="feat-d">Steam Workshop para ARK SE, CurseForge para ARK SA. Ingresás el ID y la app hace el resto.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-ico">📊</div>
+        <div class="feat-t">Monitor en tiempo real</div>
+        <p class="feat-d">RAM, jugadores conectados, uptime y consola en vivo. Sabés exactamente qué pasa en tu servidor.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-ico">🔑</div>
+        <div class="feat-t">Licencia simple</div>
+        <p class="feat-d">30 días gratis, sin tarjeta. Luego activás con clave de licencia de $15 USD pago único, para siempre.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ DESCARGA APP ═══════════════════════════ -->
+<section id="app-download" class="games-bg" style="padding:60px 24px">
+  <div class="container" style="text-align:center">
+    <h3 style="font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700;margin-bottom:10px">
+      ⬇️ Descargá InfernoHost Manager
+    </h3>
+    <p style="color:var(--muted);font-size:15px;margin-bottom:32px">
+      Windows 10/11 · 64-bit · v1.0.0 · ~73 MB · Instalador NSIS
+    </p>
+    <a href="InfernoHost Manager Setup 1.0.0.exe" class="btn-fire" style="display:inline-flex">
+      ⬇ Descargar gratis — 30 días de prueba
+    </a>
+    <div style="margin-top:20px;font-size:13px;color:var(--muted)">
+      ✓ Sin tarjeta de crédito &nbsp;·&nbsp; ✓ Sin registro &nbsp;·&nbsp; ✓ Sin límites durante el trial
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ CÓMO CONTRATAR ═══════════════════════════ -->
+<section class="how-bg">
+  <div class="container">
+    <div class="sec-label">Hosting Gestionado</div>
+    <h2 class="sec-title">Tu servidor listo en 4 pasos</h2>
+    <p class="sec-sub">Desde que nos contactás hasta que estás jugando, en menos de 24 horas.</p>
+
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">Elegí tu plan</div>
+        <p class="step-desc">Seleccioná el juego, cantidad de slots (20 o 40) y si querés mods o no.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title">Contactanos</div>
+        <p class="step-desc">Mandanos un WhatsApp con el plan elegido. Te confirmamos disponibilidad en el momento.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title">Realizás el pago</div>
+        <p class="step-desc">Pago mensual en pesos argentinos. Transferencia bancaria o MercadoPago.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-title">¡A jugar!</div>
+        <p class="step-desc">En menos de 24hs tu servidor está online. Te mandamos la IP y el admin password. ¡Listo!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ CTA FINAL ═══════════════════════════ -->
+<section class="cta-final" id="contacto">
+  <h2>¿Listo para jugar<br>en tu propio servidor?</h2>
+  <p>Completá el formulario y te contactamos en menos de 1 hora por WhatsApp.</p>
+
+  <!-- FORMULARIO SUPABASE -->
+  <div id="formWrap" style="max-width:560px;margin:0 auto 32px;text-align:left">
+    <div id="formSuccess" style="display:none;text-align:center;padding:32px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.3);border-radius:16px">
+      <div style="font-size:52px;margin-bottom:12px">🎉</div>
+      <h3 style="font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;color:#22c55e;margin-bottom:8px">¡Pedido recibido!</h3>
+      <p style="color:var(--muted);font-size:15px">Te vamos a contactar por WhatsApp en menos de 1 hora.</p>
+      <a id="waLink" href="#" target="_blank" class="btn-fire" style="display:inline-flex;margin-top:20px;font-size:15px;padding:12px 28px">
+        💬 Hablar ahora por WhatsApp
+      </a>
+    </div>
+
+    <form id="pedidoForm" style="display:grid;gap:14px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">Tu nombre *</label>
+          <input type="text" id="f-nombre" placeholder="Juan García" required
+            style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:11px 14px;color:var(--text);font-size:14px;outline:none;transition:border .2s"
+            onfocus="this.style.borderColor='rgba(249,115,22,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.12)'">
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">WhatsApp *</label>
+          <input type="tel" id="f-whatsapp" placeholder="+54 9 11 1234-5678" required
+            style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:11px 14px;color:var(--text);font-size:14px;outline:none;transition:border .2s"
+            onfocus="this.style.borderColor='rgba(249,115,22,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.12)'">
+        </div>
+      </div>
+
+      <div>
+        <label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">Juego *</label>
+        <select id="f-juego" required
+          style="width:100%;background:#0d1526;border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:11px 14px;color:var(--text);font-size:14px;outline:none;transition:border .2s"
+          onfocus="this.style.borderColor='rgba(249,115,22,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.12)'"
+          onchange="updatePlanOptions()">
+          <option value="">— Elegí tu juego —</option>
+          <option value="ARK: Survival Ascended">🔥 ARK: Survival Ascended</option>
+          <option value="ARK: Survival Evolved">🦖 ARK: Survival Evolved</option>
+          <option value="Conan Exiles Enhanced">⚔️ Conan Exiles Enhanced</option>
+          <option value="Minecraft">⛏️ Minecraft</option>
+          <option value="Valheim">🪓 Valheim</option>
+        </select>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">Plan / Slots *</label>
+          <select id="f-plan" required
+            style="width:100%;background:#0d1526;border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:11px 14px;color:var(--text);font-size:14px;outline:none;transition:border .2s"
+            onfocus="this.style.borderColor='rgba(249,115,22,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.12)'"
+            onchange="updatePrice()">
+            <option value="">— Seleccioná —</option>
+            <option value="basico-20">Básico — 20 slots — $40.000/mes</option>
+            <option value="pro-40">PRO — 40 slots — $70.000/mes</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">¿Con mods?</label>
+          <select id="f-mods"
+            style="width:100%;background:#0d1526;border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:11px 14px;color:var(--text);font-size:14px;outline:none">
+            <option value="false">Sin mods</option>
+            <option value="true">Con mods (hasta 15)</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">Mensaje (opcional)</label>
+        <textarea id="f-mensaje" rows="3" placeholder="¿Alguna configuración especial o pregunta?"
+          style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:11px 14px;color:var(--text);font-size:14px;outline:none;resize:vertical;font-family:inherit;transition:border .2s"
+          onfocus="this.style.borderColor='rgba(249,115,22,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.12)'"></textarea>
+      </div>
+
+      <!-- Precio estimado -->
+      <div id="precioEstimado" style="display:none;background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.2);border-radius:10px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:13px;color:var(--muted)">Precio estimado</span>
+        <span id="precioVal" style="font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--fire)"></span>
+      </div>
+
+      <div id="formError" style="display:none;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:10px;padding:12px 16px;font-size:13px;color:#f87171"></div>
+
+      <button type="submit" id="submitBtn"
+        style="background:linear-gradient(135deg,#f97316,#ef4444);color:#fff;border:none;border-radius:12px;padding:15px 24px;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 6px 25px rgba(249,115,22,.4);transition:transform .2s,opacity .2s;width:100%">
+        🔥 Enviar pedido
+      </button>
+      <p style="text-align:center;font-size:12px;color:var(--muted)">Al enviar, te contactaremos por WhatsApp en &lt;1 hora</p>
+    </form>
+  </div>
+
+  <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:32px">
+    <a href="https://wa.me/5492954368999?text=Hola!%20Quiero%20contratar%20un%20servidor%20de%20InfernoHost" class="btn-ghost" style="font-size:15px">
+      💬 O contactanos directo por WhatsApp
+    </a>
+  </div>
+
+  <div class="cta-chips">
+    <div class="cta-chip">🎮 <strong>5 juegos</strong> disponibles</div>
+    <div class="cta-chip">💰 <strong>$40.000</strong> desde / mes</div>
+    <div class="cta-chip">⚡ Listo en <strong>&lt;24 hs</strong></div>
+    <div class="cta-chip">🛡️ Soporte <strong>WhatsApp</strong></div>
+    <div class="cta-chip">📦 App gratis <strong>30 días</strong></div>
+  </div>
+</section>
+
+<script>
+// ══════════════════════════════════════════════════════════
+// SUPABASE CONFIG
+// ══════════════════════════════════════════════════════════
+const SUPA_URL  = 'https://nxurvtvoqfsvgbfdphhp.supabase.co';
+const SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54dXJ2dHZvcWZzdmdiZmRwaGhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5NTM2ODQsImV4cCI6MjA5NjUyOTY4NH0.Nu-FMX-atRJrj_GaxUx-x-BUaXHgnODhApwMze8OnGE';
+
+async function insertPedido(data) {
+  const res = await fetch(`${SUPA_URL}/rest/v1/pedidos`, {
+    method: 'POST',
+    headers: {
+      'apikey':        SUPA_ANON,
+      'Authorization': `Bearer ${SUPA_ANON}`,
+      'Content-Type':  'application/json',
+      'Prefer':        'return=minimal'
+    },
+    body: JSON.stringify(data)
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || 'Error al guardar el pedido');
+  }
+  return true;
+}
+
+function updatePlanOptions() {
+  updatePrice();
+}
+
+function updatePrice() {
+  const plan = document.getElementById('f-plan').value;
+  const div  = document.getElementById('precioEstimado');
+  const val  = document.getElementById('precioVal');
+  if (!plan) { div.style.display = 'none'; return; }
+  const precio = plan.startsWith('pro') ? '$70.000/mes' : '$40.000/mes';
+  val.textContent = precio;
+  div.style.display = 'flex';
+}
+
+document.getElementById('pedidoForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  const err = document.getElementById('formError');
+  err.style.display = 'none';
+
+  const nombre   = document.getElementById('f-nombre').value.trim();
+  const whatsapp = document.getElementById('f-whatsapp').value.trim();
+  const juego    = document.getElementById('f-juego').value;
+  const planVal  = document.getElementById('f-plan').value;
+  const mods     = document.getElementById('f-mods').value === 'true';
+  const mensaje  = document.getElementById('f-mensaje').value.trim();
+
+  if (!nombre || !whatsapp || !juego || !planVal) {
+    err.textContent = '⚠️ Completá todos los campos obligatorios (*)';
+    err.style.display = 'block';
+    return;
+  }
+
+  const planLabel = planVal.startsWith('pro') ? 'PRO 40 slots' : 'Básico 20 slots';
+  const slots     = planVal.startsWith('pro') ? 40 : 20;
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Enviando...';
+  btn.style.opacity = '.7';
+
+  try {
+    await insertPedido({ nombre, whatsapp, juego, plan: planLabel, slots, mods, mensaje });
+
+    // Mostrar éxito
+    document.getElementById('pedidoForm').style.display = 'none';
+    document.getElementById('formSuccess').style.display = 'block';
+
+    // Armar link WA con info del pedido
+    const waMsg = encodeURIComponent(
+      `Hola! Acabo de pedir un servidor InfernoHost.\n` +
+      `👤 ${nombre}\n🎮 ${juego}\n📦 ${planLabel}\n🔧 Mods: ${mods ? 'Sí' : 'No'}`
+    );
+    document.getElementById('waLink').href = `https://wa.me/5492954368999?text=${waMsg}`;
+
+  } catch (ex) {
+    err.textContent = '❌ ' + ex.message;
+    err.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = '🔥 Enviar pedido';
+    btn.style.opacity = '1';
+  }
+});
+</script>
+
+<!-- ═══════════════════════════ FOOTER ═══════════════════════════ -->
+<footer>
+  <div class="logo" style="justify-content:center;margin:0 auto">
+    <svg width="28" height="28" viewBox="0 0 32 32" fill="none"><path d="M16 2C16 2 6 10 6 19C6 24.5 10.5 29 16 29C21.5 29 26 24.5 26 19C26 10 16 2 16 2Z" fill="url(#fg2)"/><path d="M16 14C16 14 11 18 11 22C11 24.8 13.2 27 16 27C18.8 27 21 24.8 21 22C21 18 16 14 16 14Z" fill="url(#fc2)"/><defs><linearGradient id="fg2" x1="16" y1="2" x2="16" y2="29" gradientUnits="userSpaceOnUse"><stop stop-color="#f97316"/><stop offset="1" stop-color="#ef4444"/></linearGradient><linearGradient id="fc2" x1="16" y1="14" x2="16" y2="27" gradientUnits="userSpaceOnUse"><stop stop-color="#fbbf24"/><stop offset="1" stop-color="#f97316"/></linearGradient></defs></svg>
+    <span class="logo-txt">InfernoHost</span>
+  </div>
+  <p style="margin-top:16px">
+    Hosting profesional de servidores de juego · Argentina
+  </p>
+  <p>
+    Soporte: <a href="https://wa.me/5492954368999">WhatsApp</a> &nbsp;·&nbsp;
+    <a href="mailto:dataweb76@gmail.com">dataweb76@gmail.com</a>
+  </p>
+  <p style="margin-top:16px;font-size:12px">
+    © 2026 InfernoHost · ARK es marca de Studio Wildcard · Conan Exiles es marca de Funcom ·
+    Minecraft es marca de Microsoft · Valheim es marca de Coffee Stain Publishing
+  </p>
+</footer>
+
+</body>
+</html>

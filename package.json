@@ -1,0 +1,67 @@
+{
+  "name": "infernohost-manager",
+  "version": "1.0.0",
+  "description": "InfernoHost Game Server Manager",
+  "author": "InfernoHost",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win",
+    "build:dir": "electron-builder --win --dir"
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.0.0"
+  },
+  "build": {
+    "appId": "ar.infernohost.manager",
+    "productName": "InfernoHost Manager",
+    "copyright": "Copyright © 2025 InfernoHost",
+    "asar": true,
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer/**/*",
+      "assets/**/*",
+      "!**/*.ps1",
+      "!make-icon.ps1",
+      "!find_inferno.ps1",
+      "!list_windows.ps1",
+      "!close_explorer*.ps1",
+      "!kill_and_restart.ps1",
+      "!generate-key.js"
+    ],
+    "directories": {
+      "output": "dist",
+      "buildResources": "assets"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icon.ico",
+      "requestedExecutionLevel": "requireAdministrator",
+      "signAndEditExecutable": false,
+      "signDlls": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "assets/icon.ico",
+      "uninstallerIcon": "assets/icon.ico",
+      "installerHeaderIcon": "assets/icon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "InfernoHost Manager"
+    }
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.108.0",
+    "pg": "^8.21.0"
+  }
+}

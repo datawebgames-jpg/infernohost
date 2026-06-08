@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+out/
+
+# Credenciales admin (NO subir a git público)
+generate-key.js
+setup-supabase.js
+
+# Scripts temporales de desarrollo
+*.ps1
+
+# Archivos de licencia local (datos de usuario)
+Usersdataw*
+*.json.bak
+
+# Electron/node artifacts
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+
+# Carpetas de build de Electron
+win-unpacked/
+mac-unpacked/
+linux-unpacked/
+
+# Archivos de icono grandes ya generados (se regeneran)
+# assets/icon.ico  # comentado — sí queremos el icono
+
+# Carpeta infernohost vacía
+infernohost/
