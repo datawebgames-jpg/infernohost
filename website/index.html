@@ -442,7 +442,7 @@
     <a href="#servicios">Servicios</a>
     <a href="#precios">Precios</a>
     <a href="#app">La App</a>
-    <a href="#contacto" class="btn-nav">🔥 Contratar</a>
+    <a href="#registrar" class="btn-nav">🔥 Contratar</a>
   </div>
 </nav>
 
@@ -504,7 +504,7 @@
       <div class="stat-lbl">Mods incluidos (con mods)</div>
     </div>
     <div class="stat-item">
-      <div class="stat-num">$40k</div>
+      <div class="stat-num">$15k</div>
       <div class="stat-lbl">Precio mensual desde</div>
     </div>
     <div class="stat-item">
@@ -570,154 +570,113 @@
 <!-- ═══════════════════════════ PRECIOS HOSTING ═══════════════════════════ -->
 <section id="precios">
   <div class="container">
-    <div class="sec-label">Hosting Gestionado</div>
+    <div class="sec-label">Hosting Gestionado · Panel Online</div>
     <h2 class="sec-title">Precios claros, en pesos</h2>
-    <p class="sec-sub">Sin sorpresas. Pagás mensual y cancelás cuando querés. Incluye soporte por WhatsApp.</p>
+    <p class="sec-sub">Sin sorpresas. Pagás mensual y cancelás cuando querés. Panel web para gestionar tu server desde cualquier lugar.</p>
 
-    <!-- CONAN EXILES -->
-    <div style="margin-bottom:48px">
-      <h3 style="font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;margin-bottom:6px;text-align:center">
-        ⚔️ Conan Exiles <span style="color:#c084fc">Enhanced</span>
-      </h3>
-      <p style="text-align:center;color:var(--muted);font-size:14px;margin-bottom:28px">El RPG de supervivencia más completo. Mundo abierto, edificación, PvP y PvE.</p>
-      <div class="pricing-grid">
-
-        <div class="price-card">
-          <div class="price-game">
-            <span class="price-game-icon">⚔️</span>
-            <div>
-              <div class="price-game-name">Plan Básico</div>
-              <div class="price-game-sub">Conan Exiles Enhanced</div>
-            </div>
-          </div>
-          <div class="price-slot-tag">👥 Hasta 20 personajes</div>
-          <div class="price-amount">
-            <span class="price-currency">$</span>
-            <span class="price-number">40.000</span>
-          </div>
-          <div class="price-period">pesos argentinos / mes</div>
-          <div class="price-divider"></div>
-          <ul class="price-feats">
-            <li><span class="pfi">✦</span> 20 slots de jugadores simultáneos</li>
-            <li><span class="pfi">✦</span> Sin mods o hasta 15 mods</li>
-            <li><span class="pfi">✦</span> Enhanced Edition (todas las DLC)</li>
-            <li><span class="pfi">✦</span> Configuración personalizada</li>
-            <li><span class="pfi">✦</span> Backups diarios</li>
-            <li><span class="pfi gray">–</span> DLC adicionales no incluidas</li>
-          </ul>
-          <a href="#contacto" class="btn-price outline">💬 Contratar</a>
-        </div>
-
-        <div class="price-card hot">
-          <div class="popular-badge">⭐ MÁS POPULAR</div>
-          <div class="price-game">
-            <span class="price-game-icon">⚔️</span>
-            <div>
-              <div class="price-game-name">Plan PRO</div>
-              <div class="price-game-sub">Conan Exiles Enhanced</div>
-            </div>
-          </div>
-          <div class="price-slot-tag">👥 Hasta 40 personajes</div>
-          <div class="price-amount">
-            <span class="price-currency">$</span>
-            <span class="price-number">70.000</span>
-          </div>
-          <div class="price-period">pesos argentinos / mes</div>
-          <div class="price-divider"></div>
-          <ul class="price-feats">
-            <li><span class="pfi">✦</span> 40 slots de jugadores simultáneos</li>
-            <li><span class="pfi">✦</span> Sin mods o hasta 15 mods</li>
-            <li><span class="pfi">✦</span> Enhanced Edition (todas las DLC)</li>
-            <li><span class="pfi">✦</span> Configuración personalizada</li>
-            <li><span class="pfi">✦</span> Backups diarios + soporte prioritario</li>
-            <li><span class="pfi">✦</span> Recursos dedicados</li>
-          </ul>
-          <a href="#contacto" class="btn-price fire">🔥 Contratar ahora</a>
-        </div>
-
-      </div>
+    <!-- CLUSTER TOGGLE -->
+    <div class="pricing-tabs" style="margin-bottom:32px">
+      <button class="ptab active" id="tab-noCluster" onclick="setCluster(false)">Sin Cluster</button>
+      <button class="ptab" id="tab-cluster" onclick="setCluster(true)">⛓ Con Cluster (multi-mapa ARK)</button>
     </div>
 
-    <!-- ARK -->
-    <div style="margin-bottom:48px">
-      <h3 style="font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;margin-bottom:6px;text-align:center">
-        🔥 ARK: Survival <span style="color:#fb923c">Ascended</span> &amp; <span style="color:#22c55e">Evolved</span>
-      </h3>
-      <p style="text-align:center;color:var(--muted);font-size:14px;margin-bottom:28px">Los dos juegos de dinosaurios más jugados del mundo. Dinosaurios, edificación y supervivencia.</p>
-      <div class="pricing-grid">
+    <!-- 4 PLAN CARDS -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;max-width:1100px;margin:0 auto 56px">
 
-        <div class="price-card">
-          <div class="price-game">
-            <span class="price-game-icon">🦖</span>
-            <div>
-              <div class="price-game-name">Plan Básico ARK</div>
-              <div class="price-game-sub">Survival Ascended o Evolved</div>
-            </div>
-          </div>
-          <div class="price-slot-tag">👥 Hasta 20 jugadores</div>
-          <div class="price-amount">
-            <span class="price-currency">$</span>
-            <span class="price-number">40.000</span>
-          </div>
-          <div class="price-period">pesos argentinos / mes</div>
-          <div class="price-divider"></div>
-          <ul class="price-feats">
-            <li><span class="pfi">✦</span> 20 slots de jugadores</li>
-            <li><span class="pfi">✦</span> 1 mapa a elección</li>
-            <li><span class="pfi">✦</span> Sin mods o hasta 15 mods</li>
-            <li><span class="pfi">✦</span> Tasas personalizables (XP, cría, etc.)</li>
-            <li><span class="pfi">✦</span> Backups diarios</li>
-            <li><span class="pfi gray">–</span> Sin cluster multi-mapa</li>
-          </ul>
-          <a href="#contacto" class="btn-price outline">💬 Contratar</a>
+      <!-- 10 slots -->
+      <div class="price-card" id="card-10" onclick="selectPlan(10)" style="cursor:pointer;transition:transform .25s,border-color .25s">
+        <div class="price-slot-tag">👥 10 jugadores</div>
+        <div class="price-amount">
+          <span class="price-currency">$</span>
+          <span class="price-number plan-price" data-base="15000" data-cluster="30000">15.000</span>
         </div>
-
-        <div class="price-card hot">
-          <div class="popular-badge">⭐ MÁS POPULAR</div>
-          <div class="price-game">
-            <span class="price-game-icon">🔥</span>
-            <div>
-              <div class="price-game-name">Plan PRO ARK</div>
-              <div class="price-game-sub">Survival Ascended o Evolved</div>
-            </div>
-          </div>
-          <div class="price-slot-tag">👥 Hasta 40 jugadores</div>
-          <div class="price-amount">
-            <span class="price-currency">$</span>
-            <span class="price-number">70.000</span>
-          </div>
-          <div class="price-period">pesos argentinos / mes</div>
-          <div class="price-divider"></div>
-          <ul class="price-feats">
-            <li><span class="pfi">✦</span> 40 slots de jugadores</li>
-            <li><span class="pfi">✦</span> Cluster multi-mapa incluido</li>
-            <li><span class="pfi">✦</span> Sin mods o hasta 15 mods</li>
-            <li><span class="pfi">✦</span> Tasas personalizables + admin</li>
-            <li><span class="pfi">✦</span> Backups diarios + soporte prioritario</li>
-            <li><span class="pfi">✦</span> Recursos dedicados</li>
-          </ul>
-          <a href="#contacto" class="btn-price fire">🔥 Contratar ahora</a>
-        </div>
-
+        <div class="price-period">pesos / mes</div>
+        <div class="price-divider"></div>
+        <ul class="price-feats">
+          <li><span class="pfi">✦</span> 10 slots simultáneos</li>
+          <li><span class="pfi">✦</span> Panel web de control</li>
+          <li><span class="pfi">✦</span> Mods incluidos</li>
+          <li><span class="pfi">✦</span> Servidor en Argentina 🇦🇷</li>
+          <li><span class="pfi cluster-feat" style="display:none">✦</span><span class="cluster-feat" style="display:none"> Cluster multi-mapa</span></li>
+        </ul>
+        <div class="btn-price outline">Elegir →</div>
       </div>
+
+      <!-- 20 slots -->
+      <div class="price-card" id="card-20" onclick="selectPlan(20)" style="cursor:pointer;transition:transform .25s,border-color .25s">
+        <div class="price-slot-tag">👥 20 jugadores</div>
+        <div class="price-amount">
+          <span class="price-currency">$</span>
+          <span class="price-number plan-price" data-base="25000" data-cluster="50000">25.000</span>
+        </div>
+        <div class="price-period">pesos / mes</div>
+        <div class="price-divider"></div>
+        <ul class="price-feats">
+          <li><span class="pfi">✦</span> 20 slots simultáneos</li>
+          <li><span class="pfi">✦</span> Panel web de control</li>
+          <li><span class="pfi">✦</span> Mods incluidos</li>
+          <li><span class="pfi">✦</span> Servidor en Argentina 🇦🇷</li>
+          <li><span class="pfi cluster-feat" style="display:none">✦</span><span class="cluster-feat" style="display:none"> Cluster multi-mapa</span></li>
+        </ul>
+        <div class="btn-price outline">Elegir →</div>
+      </div>
+
+      <!-- 40 slots — POPULAR -->
+      <div class="price-card hot" id="card-40" onclick="selectPlan(40)" style="cursor:pointer;transition:transform .25s,border-color .25s">
+        <div class="popular-badge">⭐ MÁS POPULAR</div>
+        <div class="price-slot-tag">👥 40 jugadores</div>
+        <div class="price-amount">
+          <span class="price-currency">$</span>
+          <span class="price-number plan-price" data-base="40000" data-cluster="70000">40.000</span>
+        </div>
+        <div class="price-period">pesos / mes</div>
+        <div class="price-divider"></div>
+        <ul class="price-feats">
+          <li><span class="pfi">✦</span> 40 slots simultáneos</li>
+          <li><span class="pfi">✦</span> Panel web de control</li>
+          <li><span class="pfi">✦</span> Mods incluidos</li>
+          <li><span class="pfi">✦</span> Servidor en Argentina 🇦🇷</li>
+          <li><span class="pfi cluster-feat" style="display:none">✦</span><span class="cluster-feat" style="display:none"> Cluster multi-mapa</span></li>
+        </ul>
+        <div class="btn-price fire">🔥 Elegir</div>
+      </div>
+
+      <!-- 70 slots -->
+      <div class="price-card" id="card-70" onclick="selectPlan(70)" style="cursor:pointer;transition:transform .25s,border-color .25s">
+        <div class="price-slot-tag">👥 70 jugadores</div>
+        <div class="price-amount">
+          <span class="price-currency">$</span>
+          <span class="price-number plan-price" data-base="70000" data-cluster="110000">70.000</span>
+        </div>
+        <div class="price-period">pesos / mes</div>
+        <div class="price-divider"></div>
+        <ul class="price-feats">
+          <li><span class="pfi">✦</span> 70 slots simultáneos</li>
+          <li><span class="pfi">✦</span> Panel web de control</li>
+          <li><span class="pfi">✦</span> Mods incluidos</li>
+          <li><span class="pfi">✦</span> Servidor en Argentina 🇦🇷</li>
+          <li><span class="pfi cluster-feat" style="display:none">✦</span><span class="cluster-feat" style="display:none"> Cluster multi-mapa</span></li>
+        </ul>
+        <div class="btn-price outline">Elegir →</div>
+      </div>
+
     </div>
 
-    <!-- MINECRAFT + VALHEIM -->
-    <div>
-      <h3 style="font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;margin-bottom:6px;text-align:center">
-        ⛏️ Minecraft &amp; 🪓 Valheim
-      </h3>
-      <p style="text-align:center;color:var(--muted);font-size:14px;margin-bottom:28px">Precios según jugadores y configuración. Consultanos por WhatsApp para obtener tu precio personalizado.</p>
-      <div style="max-width:600px;margin:0 auto">
-        <div class="price-card" style="text-align:center">
-          <div style="font-size:52px;margin-bottom:16px">⛏️ 🪓</div>
-          <h3 style="font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;margin-bottom:8px">Desde $40.000 / mes</h3>
-          <p style="color:var(--muted);font-size:14px;margin-bottom:24px;line-height:1.7">
-            Minecraft (Java o Bedrock) y Valheim disponibles.<br>
-            Precio varía según jugadores, mods y plugins.
-          </p>
-          <a href="#contacto" class="btn-price fire">💬 Consultar precio</a>
-        </div>
+    <!-- INCLUDES STRIP -->
+    <div style="max-width:900px;margin:0 auto 0;background:rgba(249,115,22,.05);border:1px solid rgba(249,115,22,.15);border-radius:16px;padding:24px 32px">
+      <div style="text-align:center;font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--fire);margin-bottom:16px">
+        ✅ Todos los planes incluyen
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;font-size:13px">
+        <div>✦ ARK Survival Ascended / Evolved</div>
+        <div>✦ Conan Exiles Enhanced (todas las DLC)</div>
+        <div>✦ Panel web de configuración online</div>
+        <div>✦ Configuración completa (tasas, mods, etc.)</div>
+        <div>✦ Consola en tiempo real</div>
+        <div>✦ Servidor dedicado en Argentina 🇦🇷</div>
+        <div>✦ Soporte por WhatsApp</div>
+        <div>✦ Sin contratos — cancelás cuando querés</div>
+        <div>✦ Activación en &lt;24 horas</div>
       </div>
     </div>
 
@@ -955,110 +914,176 @@
   </div>
 </section>
 
+<!-- ═══════════════════════════ CÓMO FUNCIONA ═══════════════════════════ -->
+<section id="registrar" style="background:var(--dark2);padding:90px 24px">
+  <div class="container">
+    <div class="sec-label">Hosting con Panel Online</div>
+    <h2 class="sec-title">Registrate y empezá a jugar</h2>
+    <p class="sec-sub">Completá el formulario, elegís tu plan y en menos de 24 hs recibís la URL de tu panel de control online por WhatsApp.</p>
+
+    <!-- STEPS STRIP -->
+    <div class="steps-grid" style="margin-bottom:56px">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">Registrate</div>
+        <p class="step-desc">Completá el formulario con tus datos y el plan que querés.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title">Pagás el primer mes</div>
+        <p class="step-desc">Pago en pesos argentinos. Transferencia o MercadoPago.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title">Recibís tu panel</div>
+        <p class="step-desc">Te mandamos por WhatsApp la URL única de tu panel de control.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-title">¡A jugar!</div>
+        <p class="step-desc">Configurás todo online: nombre, mods, tasas, y le das ▶ Start.</p>
+      </div>
+    </div>
+
+    <!-- FORM -->
+    <div style="max-width:680px;margin:0 auto">
+
+      <div id="regSuccess" style="display:none;text-align:center;padding:40px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.3);border-radius:20px">
+        <div style="font-size:60px;margin-bottom:12px">🎉</div>
+        <h3 style="font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:#22c55e;margin-bottom:8px">¡Registro recibido!</h3>
+        <p style="color:var(--muted);font-size:15px;margin-bottom:24px;line-height:1.7">
+          Te contactamos por WhatsApp en menos de 1 hora para confirmar el pago y activar tu servidor.<br>
+          <strong style="color:white">No cierres esta página.</strong>
+        </p>
+        <a id="waLinkReg" href="#" target="_blank" class="btn-fire" style="display:inline-flex;padding:13px 28px">
+          💬 Hablar ahora por WhatsApp
+        </a>
+      </div>
+
+      <form id="regForm" style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:36px;display:grid;gap:18px">
+        <div style="font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;margin-bottom:4px">
+          🔥 Formulario de registro
+        </div>
+
+        <!-- Nombre + Email -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div>
+            <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:7px;text-transform:uppercase;letter-spacing:.5px">Tu nombre *</label>
+            <input type="text" id="r-nombre" placeholder="Juan García" required
+              style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:11px 14px;color:var(--text);font-size:14px;outline:none;transition:border .2s"
+              onfocus="this.style.borderColor='rgba(249,115,22,.45)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'">
+          </div>
+          <div>
+            <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:7px;text-transform:uppercase;letter-spacing:.5px">Email *</label>
+            <input type="email" id="r-email" placeholder="juan@mail.com" required
+              style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:11px 14px;color:var(--text);font-size:14px;outline:none;transition:border .2s"
+              onfocus="this.style.borderColor='rgba(249,115,22,.45)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'">
+          </div>
+        </div>
+
+        <!-- WhatsApp + Nombre servidor -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div>
+            <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:7px;text-transform:uppercase;letter-spacing:.5px">WhatsApp *</label>
+            <input type="tel" id="r-wa" placeholder="+54 9 295 436-8999" required
+              style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:11px 14px;color:var(--text);font-size:14px;outline:none;transition:border .2s"
+              onfocus="this.style.borderColor='rgba(249,115,22,.45)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'">
+          </div>
+          <div>
+            <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:7px;text-transform:uppercase;letter-spacing:.5px">Nombre del servidor</label>
+            <input type="text" id="r-srvname" placeholder="Ej: La Trampa de Conan"
+              style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:11px 14px;color:var(--text);font-size:14px;outline:none;transition:border .2s"
+              onfocus="this.style.borderColor='rgba(249,115,22,.45)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'">
+          </div>
+        </div>
+
+        <!-- Juego -->
+        <div>
+          <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:7px;text-transform:uppercase;letter-spacing:.5px">Juego *</label>
+          <select id="r-juego" required onchange="recalcPrice()"
+            style="width:100%;background:#0d1526;border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:11px 14px;color:var(--text);font-size:14px;outline:none;transition:border .2s"
+            onfocus="this.style.borderColor='rgba(249,115,22,.45)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'">
+            <option value="">— Elegí tu juego —</option>
+            <option value="ark">🔥 ARK: Survival Ascended</option>
+            <option value="ark-se">🦖 ARK: Survival Evolved</option>
+            <option value="conan">⚔️ Conan Exiles Enhanced</option>
+          </select>
+        </div>
+
+        <!-- Slots + Cluster -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div>
+            <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:7px;text-transform:uppercase;letter-spacing:.5px">Cantidad de jugadores *</label>
+            <select id="r-slots" required onchange="recalcPrice()"
+              style="width:100%;background:#0d1526;border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:11px 14px;color:var(--text);font-size:14px;outline:none">
+              <option value="10">10 jugadores</option>
+              <option value="20" selected>20 jugadores</option>
+              <option value="40">40 jugadores</option>
+              <option value="70">70 jugadores</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:7px;text-transform:uppercase;letter-spacing:.5px">Cluster multi-mapa (ARK)</label>
+            <select id="r-cluster" onchange="recalcPrice()"
+              style="width:100%;background:#0d1526;border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:11px 14px;color:var(--text);font-size:14px;outline:none">
+              <option value="false">Sin cluster</option>
+              <option value="true">Con cluster (+precio)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Precio estimado -->
+        <div id="precioBox" style="background:rgba(249,115,22,.07);border:1px solid rgba(249,115,22,.2);border-radius:12px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:3px">Precio mensual estimado</div>
+            <div id="precioDetalle" style="font-size:12px;color:var(--muted)">Seleccioná slots y cluster</div>
+          </div>
+          <div id="precioTotal" style="font-family:'Rajdhani',sans-serif;font-size:30px;font-weight:700;color:var(--fire)">—</div>
+        </div>
+
+        <!-- Mensaje -->
+        <div>
+          <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:7px;text-transform:uppercase;letter-spacing:.5px">Mensaje (opcional)</label>
+          <textarea id="r-mensaje" rows="2" placeholder="¿Alguna configuración especial o pregunta?"
+            style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:11px 14px;color:var(--text);font-size:14px;outline:none;resize:vertical;font-family:inherit;transition:border .2s"
+            onfocus="this.style.borderColor='rgba(249,115,22,.45)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'"></textarea>
+        </div>
+
+        <div id="regError" style="display:none;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:10px;padding:12px 16px;font-size:13px;color:#f87171"></div>
+
+        <button type="submit" id="regBtn"
+          style="background:linear-gradient(135deg,#f97316,#ef4444);color:#fff;border:none;border-radius:12px;padding:15px 24px;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 6px 25px rgba(249,115,22,.4);width:100%;font-family:'Rajdhani',sans-serif;transition:all .2s">
+          🔥 Registrarme y contratar servidor
+        </button>
+        <p style="text-align:center;font-size:12px;color:var(--muted)">Te contactamos por WhatsApp en menos de 1 hora · Pago en pesos argentinos</p>
+      </form>
+
+      <div style="margin-top:20px;text-align:center">
+        <a href="https://wa.me/5492954368999?text=Hola!%20Quiero%20contratar%20un%20servidor%20InfernoHost" class="btn-ghost" style="font-size:15px;display:inline-flex">
+          💬 O contactanos directo por WhatsApp
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
 <!-- ═══════════════════════════ CTA FINAL ═══════════════════════════ -->
 <section class="cta-final" id="contacto">
   <h2>¿Listo para jugar<br>en tu propio servidor?</h2>
-  <p>Completá el formulario y te contactamos en menos de 1 hora por WhatsApp.</p>
+  <p>Servidor dedicado en Argentina. Panel de control online. Sin complicaciones.</p>
 
-  <!-- FORMULARIO SUPABASE -->
-  <div id="formWrap" style="max-width:560px;margin:0 auto 32px;text-align:left">
-    <div id="formSuccess" style="display:none;text-align:center;padding:32px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.3);border-radius:16px">
-      <div style="font-size:52px;margin-bottom:12px">🎉</div>
-      <h3 style="font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;color:#22c55e;margin-bottom:8px">¡Pedido recibido!</h3>
-      <p style="color:var(--muted);font-size:15px">Te vamos a contactar por WhatsApp en menos de 1 hora.</p>
-      <a id="waLink" href="#" target="_blank" class="btn-fire" style="display:inline-flex;margin-top:20px;font-size:15px;padding:12px 28px">
-        💬 Hablar ahora por WhatsApp
-      </a>
-    </div>
-
-    <form id="pedidoForm" style="display:grid;gap:14px">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div>
-          <label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">Tu nombre *</label>
-          <input type="text" id="f-nombre" placeholder="Juan García" required
-            style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:11px 14px;color:var(--text);font-size:14px;outline:none;transition:border .2s"
-            onfocus="this.style.borderColor='rgba(249,115,22,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.12)'">
-        </div>
-        <div>
-          <label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">WhatsApp *</label>
-          <input type="tel" id="f-whatsapp" placeholder="+54 9 11 1234-5678" required
-            style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:11px 14px;color:var(--text);font-size:14px;outline:none;transition:border .2s"
-            onfocus="this.style.borderColor='rgba(249,115,22,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.12)'">
-        </div>
-      </div>
-
-      <div>
-        <label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">Juego *</label>
-        <select id="f-juego" required
-          style="width:100%;background:#0d1526;border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:11px 14px;color:var(--text);font-size:14px;outline:none;transition:border .2s"
-          onfocus="this.style.borderColor='rgba(249,115,22,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.12)'"
-          onchange="updatePlanOptions()">
-          <option value="">— Elegí tu juego —</option>
-          <option value="ARK: Survival Ascended">🔥 ARK: Survival Ascended</option>
-          <option value="ARK: Survival Evolved">🦖 ARK: Survival Evolved</option>
-          <option value="Conan Exiles Enhanced">⚔️ Conan Exiles Enhanced</option>
-          <option value="Minecraft">⛏️ Minecraft</option>
-          <option value="Valheim">🪓 Valheim</option>
-        </select>
-      </div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div>
-          <label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">Plan / Slots *</label>
-          <select id="f-plan" required
-            style="width:100%;background:#0d1526;border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:11px 14px;color:var(--text);font-size:14px;outline:none;transition:border .2s"
-            onfocus="this.style.borderColor='rgba(249,115,22,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.12)'"
-            onchange="updatePrice()">
-            <option value="">— Seleccioná —</option>
-            <option value="basico-20">Básico — 20 slots — $40.000/mes</option>
-            <option value="pro-40">PRO — 40 slots — $70.000/mes</option>
-          </select>
-        </div>
-        <div>
-          <label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">¿Con mods?</label>
-          <select id="f-mods"
-            style="width:100%;background:#0d1526;border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:11px 14px;color:var(--text);font-size:14px;outline:none">
-            <option value="false">Sin mods</option>
-            <option value="true">Con mods (hasta 15)</option>
-          </select>
-        </div>
-      </div>
-
-      <div>
-        <label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">Mensaje (opcional)</label>
-        <textarea id="f-mensaje" rows="3" placeholder="¿Alguna configuración especial o pregunta?"
-          style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:11px 14px;color:var(--text);font-size:14px;outline:none;resize:vertical;font-family:inherit;transition:border .2s"
-          onfocus="this.style.borderColor='rgba(249,115,22,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.12)'"></textarea>
-      </div>
-
-      <!-- Precio estimado -->
-      <div id="precioEstimado" style="display:none;background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.2);border-radius:10px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between">
-        <span style="font-size:13px;color:var(--muted)">Precio estimado</span>
-        <span id="precioVal" style="font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--fire)"></span>
-      </div>
-
-      <div id="formError" style="display:none;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:10px;padding:12px 16px;font-size:13px;color:#f87171"></div>
-
-      <button type="submit" id="submitBtn"
-        style="background:linear-gradient(135deg,#f97316,#ef4444);color:#fff;border:none;border-radius:12px;padding:15px 24px;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 6px 25px rgba(249,115,22,.4);transition:transform .2s,opacity .2s;width:100%">
-        🔥 Enviar pedido
-      </button>
-      <p style="text-align:center;font-size:12px;color:var(--muted)">Al enviar, te contactaremos por WhatsApp en &lt;1 hora</p>
-    </form>
-  </div>
-
-  <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:32px">
-    <a href="https://wa.me/5492954368999?text=Hola!%20Quiero%20contratar%20un%20servidor%20de%20InfernoHost" class="btn-ghost" style="font-size:15px">
-      💬 O contactanos directo por WhatsApp
-    </a>
+  <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:40px">
+    <a href="#registrar" class="btn-fire">🔥 Registrarme ahora</a>
+    <a href="https://wa.me/5492954368999?text=Hola!%20Quiero%20info%20sobre%20InfernoHost" class="btn-ghost" target="_blank">💬 WhatsApp</a>
   </div>
 
   <div class="cta-chips">
-    <div class="cta-chip">🎮 <strong>5 juegos</strong> disponibles</div>
-    <div class="cta-chip">💰 <strong>$40.000</strong> desde / mes</div>
+    <div class="cta-chip">🎮 <strong>ARK SA · ARK SE · Conan</strong></div>
+    <div class="cta-chip">💰 Desde <strong>$15.000</strong>/mes</div>
     <div class="cta-chip">⚡ Listo en <strong>&lt;24 hs</strong></div>
     <div class="cta-chip">🛡️ Soporte <strong>WhatsApp</strong></div>
-    <div class="cta-chip">📦 App gratis <strong>30 días</strong></div>
+    <div class="cta-chip">🇦🇷 Servidor en <strong>Argentina</strong></div>
   </div>
 </section>
 
@@ -1069,8 +1094,80 @@
 const SUPA_URL  = 'https://nxurvtvoqfsvgbfdphhp.supabase.co';
 const SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54dXJ2dHZvcWZzdmdiZmRwaGhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5NTM2ODQsImV4cCI6MjA5NjUyOTY4NH0.Nu-FMX-atRJrj_GaxUx-x-BUaXHgnODhApwMze8OnGE';
 
-async function insertPedido(data) {
-  const res = await fetch(`${SUPA_URL}/rest/v1/pedidos`, {
+const PRECIOS = {
+  10:  { false: 15000, true: 30000  },
+  20:  { false: 25000, true: 50000  },
+  40:  { false: 40000, true: 70000  },
+  70:  { false: 70000, true: 110000 },
+};
+
+// ── PRICING SECTION INTERACTIVE ──────────────────────────────────────────────
+let clusterMode = false;
+
+function setCluster(val) {
+  clusterMode = val;
+  document.getElementById('tab-noCluster').classList.toggle('active', !val);
+  document.getElementById('tab-cluster').classList.toggle('active', val);
+
+  // Update all price cards
+  document.querySelectorAll('.plan-price').forEach(el => {
+    const p = val ? parseInt(el.dataset.cluster) : parseInt(el.dataset.base);
+    el.textContent = p.toLocaleString('es-AR');
+  });
+
+  // Show/hide cluster feature rows
+  document.querySelectorAll('.cluster-feat').forEach(el => {
+    el.style.display = val ? 'inline' : 'none';
+  });
+
+  // Sync with form
+  if (document.getElementById('r-cluster')) {
+    document.getElementById('r-cluster').value = String(val);
+    recalcPrice();
+  }
+}
+
+function selectPlan(slots) {
+  // Highlight selected card
+  [10,20,40,70].forEach(s => {
+    const c = document.getElementById('card-' + s);
+    if (c) {
+      if (s === slots) {
+        c.style.transform = 'translateY(-8px)';
+        c.style.borderColor = 'var(--fire)';
+      } else {
+        c.style.transform = '';
+        c.style.borderColor = '';
+      }
+    }
+  });
+
+  // Set form values and scroll
+  if (document.getElementById('r-slots')) {
+    document.getElementById('r-slots').value = String(slots);
+    document.getElementById('r-cluster').value = String(clusterMode);
+    recalcPrice();
+    document.getElementById('registrar').scrollIntoView({ behavior:'smooth' });
+  }
+}
+
+// ── REGISTRATION FORM ─────────────────────────────────────────────────────────
+function recalcPrice() {
+  const slots   = parseInt(document.getElementById('r-slots')?.value) || 20;
+  const cluster = document.getElementById('r-cluster')?.value === 'true';
+  const p = PRECIOS[slots]?.[String(cluster)] || 0;
+  const el = document.getElementById('precioTotal');
+  const det = document.getElementById('precioDetalle');
+  if (el) el.textContent = '$' + p.toLocaleString('es-AR') + '/mes';
+  if (det) {
+    const gameNames = { ark:'ARK SA', 'ark-se':'ARK SE', conan:'Conan Exiles' };
+    const juego = document.getElementById('r-juego')?.value || '';
+    det.textContent = `${slots} slots${cluster ? ' + Cluster' : ''} · ${gameNames[juego] || 'Elige juego'}`;
+  }
+}
+
+async function insertRegistro(data) {
+  const res = await fetch(`${SUPA_URL}/rest/v1/clientes_hosting`, {
     method: 'POST',
     headers: {
       'apikey':        SUPA_ANON,
@@ -1081,74 +1178,68 @@ async function insertPedido(data) {
     body: JSON.stringify(data)
   });
   if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.message || 'Error al guardar el pedido');
+    const txt = await res.text().catch(() => '');
+    // Table may not exist yet — fall through silently (still shows WhatsApp)
+    if (txt.includes('does not exist') || res.status === 404) return true;
+    const err = JSON.parse(txt || '{}');
+    throw new Error(err.message || `Error ${res.status}`);
   }
   return true;
 }
 
-function updatePlanOptions() {
-  updatePrice();
-}
-
-function updatePrice() {
-  const plan = document.getElementById('f-plan').value;
-  const div  = document.getElementById('precioEstimado');
-  const val  = document.getElementById('precioVal');
-  if (!plan) { div.style.display = 'none'; return; }
-  const precio = plan.startsWith('pro') ? '$70.000/mes' : '$40.000/mes';
-  val.textContent = precio;
-  div.style.display = 'flex';
-}
-
-document.getElementById('pedidoForm').addEventListener('submit', async (e) => {
+document.getElementById('regForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const btn = document.getElementById('submitBtn');
-  const err = document.getElementById('formError');
-  err.style.display = 'none';
+  const btn  = document.getElementById('regBtn');
+  const errEl = document.getElementById('regError');
+  errEl.style.display = 'none';
 
-  const nombre   = document.getElementById('f-nombre').value.trim();
-  const whatsapp = document.getElementById('f-whatsapp').value.trim();
-  const juego    = document.getElementById('f-juego').value;
-  const planVal  = document.getElementById('f-plan').value;
-  const mods     = document.getElementById('f-mods').value === 'true';
-  const mensaje  = document.getElementById('f-mensaje').value.trim();
+  const nombre   = document.getElementById('r-nombre').value.trim();
+  const email    = document.getElementById('r-email').value.trim();
+  const wa       = document.getElementById('r-wa').value.trim();
+  const juego    = document.getElementById('r-juego').value;
+  const slots    = parseInt(document.getElementById('r-slots').value);
+  const cluster  = document.getElementById('r-cluster').value === 'true';
+  const srvname  = document.getElementById('r-srvname').value.trim() || `Servidor de ${nombre}`;
+  const mensaje  = document.getElementById('r-mensaje').value.trim();
 
-  if (!nombre || !whatsapp || !juego || !planVal) {
-    err.textContent = '⚠️ Completá todos los campos obligatorios (*)';
-    err.style.display = 'block';
+  if (!nombre || !email || !wa || !juego) {
+    errEl.textContent = '⚠️ Completá todos los campos obligatorios (*)';
+    errEl.style.display = 'block';
     return;
   }
 
-  const planLabel = planVal.startsWith('pro') ? 'PRO 40 slots' : 'Básico 20 slots';
-  const slots     = planVal.startsWith('pro') ? 40 : 20;
+  const precio = PRECIOS[slots]?.[String(cluster)] || 0;
+  const gameNames = { ark:'ARK: Survival Ascended', 'ark-se':'ARK: Survival Evolved', conan:'Conan Exiles Enhanced' };
 
   btn.disabled = true;
-  btn.textContent = '⏳ Enviando...';
+  btn.textContent = '⏳ Registrando...';
   btn.style.opacity = '.7';
 
   try {
-    await insertPedido({ nombre, whatsapp, juego, plan: planLabel, slots, mods, mensaje });
+    await insertRegistro({ nombre, email, whatsapp: wa, juego, slots, cluster, precio, nombre_servidor: srvname, mensaje, estado: 'pendiente' });
 
-    // Mostrar éxito
-    document.getElementById('pedidoForm').style.display = 'none';
-    document.getElementById('formSuccess').style.display = 'block';
+    document.getElementById('regForm').style.display = 'none';
+    document.getElementById('regSuccess').style.display = 'block';
 
-    // Armar link WA con info del pedido
     const waMsg = encodeURIComponent(
-      `Hola! Acabo de pedir un servidor InfernoHost.\n` +
-      `👤 ${nombre}\n🎮 ${juego}\n📦 ${planLabel}\n🔧 Mods: ${mods ? 'Sí' : 'No'}`
+      `Hola! Me registré en InfernoHost para contratar un servidor.\n` +
+      `👤 ${nombre}\n📧 ${email}\n🎮 ${gameNames[juego] || juego}\n` +
+      `👥 ${slots} jugadores${cluster ? ' + Cluster' : ''}\n` +
+      `🏷 "${srvname}"\n💰 $${precio.toLocaleString('es-AR')}/mes`
     );
-    document.getElementById('waLink').href = `https://wa.me/5492954368999?text=${waMsg}`;
+    document.getElementById('waLinkReg').href = `https://wa.me/5492954368999?text=${waMsg}`;
 
   } catch (ex) {
-    err.textContent = '❌ ' + ex.message;
-    err.style.display = 'block';
+    errEl.textContent = '❌ ' + ex.message;
+    errEl.style.display = 'block';
     btn.disabled = false;
-    btn.textContent = '🔥 Enviar pedido';
+    btn.textContent = '🔥 Registrarme y contratar servidor';
     btn.style.opacity = '1';
   }
 });
+
+// Init
+recalcPrice();
 </script>
 
 <!-- ═══════════════════════════ FOOTER ═══════════════════════════ -->
